@@ -24,7 +24,7 @@ export const AppReducer = (state: any, action: any) => {
                 ...state,
                 socket: null,
                 info: null,
-                subscribed: false,
+                subscribed: null,
                 book: new OrderBook([], [])
             }
         default:

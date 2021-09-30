@@ -1,8 +1,19 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
-import ApiTest from './components/ApiTest';
+import OrderBookView from './components/OrderBookView';
 import './css/app.scss';
+import { OrderBook } from './types/order-book';
+
+
+const initialAppState = {
+    productId: 'PI_XBTUSD',
+    feed: 'book_ui_1',
+    socket: null,
+    info: null,
+    subscribed: null,
+    book: new OrderBook([], [])
+}
 
 class App extends React.Component<{}, {}> {
     render() {
@@ -23,7 +34,7 @@ class App extends React.Component<{}, {}> {
                                 <div>Hello from generator2</div>
                             </Route>
                             <Route exact={true} path="/apitest">
-                                <ApiTest/>
+                                <OrderBookView initialState={initialAppState} />
                             </Route>
                         </Switch>
                     </div>

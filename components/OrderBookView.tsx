@@ -1,19 +1,12 @@
 import React, { useEffect, useReducer, useRef } from 'react'
-import { Order, OrderBook } from '../types/order-book'
+import { Order } from '../types/order-book'
 import { combineReducers, FeedReducer, AppReducer } from '../reducers';
+import { AppState } from '../types/App';
 
-const initialAppState = {
-    productId: 'PI_XBTUSD',
-    feed: 'book_ui_1',
-    socket: null,
-    info: null,
-    subscribed: false,
-    book: new OrderBook([], [])
-};
 
-const ApiTest = () => {
+const OrderBookView = ({ initialState }: AppState) => {
     const combinedReducer = combineReducers(AppReducer, FeedReducer);
-    const [state, dispatch] = useReducer(combinedReducer, initialAppState)
+    const [state, dispatch] = useReducer(combinedReducer, initialState)
     const socket = useRef<any>(null);
     socket.current = state.socket
 
@@ -40,4 +33,4 @@ const ApiTest = () => {
     </div>
 }
 
-export default ApiTest
+export default OrderBookView
