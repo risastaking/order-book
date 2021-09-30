@@ -39,7 +39,9 @@ class OrderBookService {
                 console.log('3. snapshot')
                 console.log(message as SnapshotEvent)
                 let m = message as SnapshotEvent
-                this.setBook({ asks: m.asks, bids: m.bids })
+                let book = new OrderBook(m.bids, m.asks)
+                book.calculateTotals()
+                this.setBook(book)
                 return message as SnapshotEvent
             case 'book_ui_1':
                 console.log('4. delta')

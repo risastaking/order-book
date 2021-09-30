@@ -7,7 +7,6 @@ const ApiTest = () => {
     let obs = new OrderBookService(setBook)
     useEffect(() => {
         obs.start()
-
         return () => {
             obs.stop()
         }
@@ -15,9 +14,13 @@ const ApiTest = () => {
     return <div>
         <h1>Order Book</h1>
         <h2>Asks</h2>
-        {book.asks.map((ask: Order) => <div>{ask[0]} {ask[1]}</div>)}
+        <table>
+        {book.asks.map((ask: Order) => <tr><td>{ask[0]}</td><td>{ask[1]}</td><td>{ask[2]}</td></tr>)}
+        </table>
         <h2>Bids</h2>
-        {book.bids.map((bid: Order) => <div>{bid[0]} {bid[1]}</div>)}
+        <table>
+        {book.bids.map((bid: Order) => <tr><td>{bid[0]}</td><td>{bid[1]}</td><td>{bid[2]}</td></tr>)}
+        </table>
     </div>
 }
 
