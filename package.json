@@ -1,0 +1,26 @@
+{
+  "name": "order-book",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build"
+  },
+  "keywords": [],
+  "author": "markdreyer",
+  "license": "ISC",
+  "dependencies": {
+    "@types/react": "^17.0.25",
+    "node-sass": "^6.0.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-router-dom": "^5.3.0"
+  },
+  "devDependencies": {
+    "@parcel/transformer-sass": "^2.0.0-rc.0",
+    "parcel": "^2.0.0-rc.0",
+    "typescript": "^4.4.3"
+  },
+  "browserslist": "> 0.25%, not dead"
+}
