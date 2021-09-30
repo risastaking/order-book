@@ -7,8 +7,6 @@ export interface OrderBook {
 
 export class OrderBook implements OrderBook {
     constructor(public bids: Order[], public asks: Order[]) {
-
-
         this.calculateTotals()
     }
     calculateTotals(): void {
