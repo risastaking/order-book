@@ -1,6 +1,8 @@
+import { Order } from "../order-book";
+
 export interface DeltaEvent {
-    asks: Array<Array<number>>;
-    bids: Array<Array<number>>;
+    asks: Order[];
+    bids: Order[];
     feed: string;
     product_id: string;
 }
@@ -9,8 +11,8 @@ export interface InfoEvent {
     version: number;
 }
 export interface SnapshotEvent {
-    asks: Array<Array<number>>;
-    bids: Array<Array<number>>;
+    asks: Order[];
+    bids: Order[];
     feed: string;
     numLevels: number;
     productId: string;

@@ -1,16 +1,20 @@
+import { Dispatch, SetStateAction } from "react";
 import {
     DeltaEvent,
     SubscribedEvent,
     InfoEvent,
     SnapshotEvent
-} from "../events";
+} from "../types/events";
+import { OrderBook } from "../types/order-book";
 
 class OrderBookService {
     socket: WebSocket;
     subscribed: boolean = false;
-    constructor() {
+    setBook: Dispatch<SetStateAction<OrderBook>>
+    constructor(setBook: Dispatch<SetStateAction<OrderBook>>) {
         this.socket = new WebSocket('wss://www.cryptofacilities.com/ws/v1')
-        this.socket.onmessage = this.messageProcessor
+        this.socket.onmessage = this.messageProcessor.bind(this)
+        this.setBook = setBook
     }
     start() {
         this.socket.onopen = () => {
@@ -34,6 +38,8 @@ class OrderBookService {
             case 'book_ui_1_snapshot':
                 console.log('3. snapshot')
                 console.log(message as SnapshotEvent)
+                let m = message as SnapshotEvent
+                this.setBook({ asks: m.asks, bids: m.bids })
                 return message as SnapshotEvent
             case 'book_ui_1':
                 console.log('4. delta')
