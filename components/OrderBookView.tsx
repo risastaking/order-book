@@ -5,6 +5,8 @@ import { AppState } from '../types/App';
 
 
 const OrderBookView = ({ initialState }: AppState) => {
+
+    //TODO: move to app level, should only have dispatch here
     const combinedReducer = combineReducers(AppReducer, FeedReducer);
     const [state, dispatch] = useReducer(combinedReducer, initialState)
     const socket = useRef<any>(null);
@@ -15,6 +17,7 @@ const OrderBookView = ({ initialState }: AppState) => {
         return () => dispatch({ type: 'stop', value: socket })
     }, [])
     return <div>
+        {state.subscribed && <p>Subscribed to {state.productId} </p>}
         <h1>Order Book</h1>
         <h2>Asks</h2>
         <table>
