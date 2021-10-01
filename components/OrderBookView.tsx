@@ -2,18 +2,24 @@ import React, { useEffect, useReducer, useRef } from 'react'
 import { Order } from '../types/order-book'
 import { combineReducers, FeedReducer, AppReducer } from '../reducers'
 import { AppState } from '../types/App'
+import { usePageVisibility } from '../hooks/visibility'
 
 const OrderBookView = ({ initialState }: AppState) => {
     //TODO: move to app level, should only have dispatch here
     const combinedReducer = combineReducers(AppReducer, FeedReducer)
     const [state, dispatch] = useReducer(combinedReducer, initialState)
+    const isVisible = usePageVisibility()
     const socket = useRef<any>(null)
     socket.current = state.socket
 
     useEffect(() => {
-        dispatch({ type: 'start', value: dispatch })
+        if (isVisible) {
+            dispatch({ type: 'start', value: dispatch })
+        } else {
+            dispatch({ type: 'stop', value: socket })
+        }
         return () => dispatch({ type: 'stop', value: socket })
-    }, [])
+    }, [isVisible])
     return (
         <div>
             {state.subscribed && <p>Subscribed to {state.productId} </p>}
@@ -30,6 +36,7 @@ const OrderBookView = ({ initialState }: AppState) => {
                     ))}
                 </tbody>
             </table>
+            <p>Spread: {state.book?.spread}</p>
             <h2>Bids</h2>
             <table>
                 <tbody>

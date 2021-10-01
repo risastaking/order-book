@@ -3,6 +3,7 @@ import * as ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
 import OrderBookView from './components/OrderBookView'
 import './css/app.scss'
+import { usePageVisibility } from './hooks/visibility'
 import { OrderBook } from './types/order-book'
 
 const initialAppState = {

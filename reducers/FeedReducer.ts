@@ -40,7 +40,7 @@ const calculateBook = (bids: Order[], asks: Order[]) => {
     asks = asks.slice(0, 25)
     asks.sort(desc)
 
-    return { bids: bids, asks: asks }
+    return { bids: bids, asks: asks, spread: asks[asks.length - 1][0] - bids[0][0] }
 }
 const sumOrders = (orders: Order[]) =>
     orders?.reduce((acc: Order[], current: Order) => {
