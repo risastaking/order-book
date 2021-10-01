@@ -32,7 +32,7 @@ export const AppReducer = (state: any, action: any) => {
                 socket: null,
                 info: null,
                 subscribed: null,
-                book: new OrderBook([], []),
+                book: { bids: [], asks: [] } as OrderBook,
             }
         default:
             return state
