@@ -22,18 +22,18 @@ const OrderBookView = ({ initialState }: AppState) => {
         <h2>Asks</h2>
         <table>
             <tbody>
-                {state.book.asks.map((ask: Order) =>
+                {state.book?.asks.map((ask: Order) =>
                     <tr key={ask[0]}><td>{ask[0]}</td><td>{ask[1]}</td><td>{ask[2]}</td></tr>)}
             </tbody>
         </table>
         <h2>Bids</h2>
         <table>
             <tbody>
-                {state.book.bids.map((bid: Order) =>
+                {state.book?.bids.map((bid: Order) =>
                     <tr key={bid[0]}><td>{bid[0]}</td><td>{bid[1]}</td><td>{bid[2]}</td></tr>)}
             </tbody>
         </table>
-    </div>
+    </div >
 }
 
 export default OrderBookView

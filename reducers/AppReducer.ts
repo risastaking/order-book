@@ -11,8 +11,10 @@ export const AppReducer = (state: any, action: any) => {
                     product_ids: [state.productId]
                 }))
             socket.onmessage = (event: any) => {
-                let eventData = JSON.parse(event.data)
-                action.value({ type: eventData?.event || eventData?.feed, value: eventData })
+                requestAnimationFrame(() => {
+                    let eventData = JSON.parse(event.data)
+                    action.value({ type: eventData?.event || eventData?.feed, value: eventData })
+                })
             }
             return {
                 ...state,
@@ -28,7 +30,6 @@ export const AppReducer = (state: any, action: any) => {
                 book: new OrderBook([], [])
             }
         default:
-            console.error('App: Unknown message type ' + action.type)
             return state
     }
 }

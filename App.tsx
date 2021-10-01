@@ -12,7 +12,7 @@ const initialAppState = {
     socket: null,
     info: null,
     subscribed: null,
-    book: new OrderBook([], [])
+    book: { bids: [], asks: [] } as OrderBook
 }
 
 class App extends React.Component<{}, {}> {

@@ -1,5 +1,49 @@
-import { InfoEvent, SubscribedEvent, SnapshotEvent } from "../types/events"
-import { OrderBook } from "../types/order-book"
+import { InfoEvent, SubscribedEvent, SnapshotEvent, DeltaEvent } from "../types/events"
+import { Order } from "../types/order-book"
+
+const asc = (a: number[], b: number[]) => a[0] - b[0]
+const desc = (a: number[], b: number[]) => b[0] - a[0]
+
+const mergeOrders = (orders: Order[], newOrders: Order[]) => {
+    let merged = orders.map(o => [o[0], o[1]])
+    newOrders.forEach(n => {
+        let index = merged.findIndex(o => o[0] === n[0])
+        if (index === -1) {
+            merged.push(n)
+        } else {
+            merged[index][1] = n[1]
+        }
+    })
+    return merged
+}
+
+const filterZeroQuantityOrders = (orders: Order[]) => {
+    let zeroQuantity = orders.filter(o => o[1] === 0)
+    return orders.filter(o => !zeroQuantity.map(z => z[0]).includes(o[0]))
+}
+
+const calculateBook = (bids: any[], asks: any[]) => {
+    bids = filterZeroQuantityOrders(bids)
+    asks = filterZeroQuantityOrders(asks)
+
+    bids.sort(asc)
+    let bids_ret = sumOrders(bids)
+    bids_ret.sort(desc)
+    bids_ret = bids_ret.slice(0, 25) //todo constant
+
+    asks.sort(asc)
+    asks = asks.slice(0, 25) //todo constant
+    asks.sort(desc)
+    let asks_ret = sumOrders(asks)
+
+    return { bids: bids_ret, asks: asks_ret }
+}
+const sumOrders = (orders: Order[]): Order[] =>
+    orders.map((order, i) =>
+        [order[0], order[1], orders.slice(0, i + 1).reduce((a, b) =>
+            a + b[1], 0)])
+
+
 
 export const FeedReducer = (state: any, action: any) => {
     switch (action.type) {
@@ -15,18 +59,25 @@ export const FeedReducer = (state: any, action: any) => {
             }
         case 'book_ui_1_snapshot':
             let m = action.value as SnapshotEvent
-            let book = new OrderBook(m.bids, m.asks)
-            book.calculateTotals()
             return {
                 ...state,
-                book: book
+                book: {
+                    ...calculateBook(
+                        [...m.bids],
+                        [...m.asks])
+                }
             }
         case 'book_ui_1':
-            //TODO: implement
-            //return action.value as DeltaEvent
-            return state
+            return {
+                ...state,
+                book: {
+                    ...calculateBook(
+                        [...mergeOrders(state.book.bids, (action.value as DeltaEvent).bids)],
+                        [...mergeOrders(state.book.asks, (action.value as DeltaEvent).asks)]
+                    )
+                }
+            }
         default:
-            console.error('Feed: Unknown message type ' + action.type)
             return state
     }
 }
