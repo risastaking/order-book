@@ -4,8 +4,8 @@ import { Order } from "../types/order-book"
 const asc = (a: number[], b: number[]) => a[0] - b[0]
 const desc = (a: number[], b: number[]) => b[0] - a[0]
 
-const mergeOrders = (orders: Order[], newOrders: Order[]) => {
-    let merged = orders.map(o => [o[0], o[1]])
+const mergeOrders = (orders: Order[], newOrders: Order[]) : Order[] => {
+    let merged = orders.map(o => [o[0], o[1], o[2]] as Order)
     newOrders.forEach(n => {
         let index = merged.findIndex(o => o[0] === n[0])
         if (index === -1) {
@@ -22,28 +22,27 @@ const filterZeroQuantityOrders = (orders: Order[]) => {
     return orders.filter(o => !zeroQuantity.map(z => z[0]).includes(o[0]))
 }
 
-const calculateBook = (bids: any[], asks: any[]) => {
+const calculateBook = (bids: Order[], asks: Order[]) => {
     bids = filterZeroQuantityOrders(bids)
     asks = filterZeroQuantityOrders(asks)
 
-    bids.sort(asc)
-    let bids_ret = sumOrders(bids)
-    bids_ret.sort(desc)
-    bids_ret = bids_ret.slice(0, 25) //todo constant
+    bids.sort(desc)
+    bids = sumOrders(bids)
+    bids = bids.slice(0, 25)
 
     asks.sort(asc)
-    asks = asks.slice(0, 25) //todo constant
+    asks = sumOrders(asks)
+    asks = asks.slice(0, 25)
     asks.sort(desc)
-    let asks_ret = sumOrders(asks)
 
-    return { bids: bids_ret, asks: asks_ret }
+    return { bids: bids, asks: asks }
 }
-const sumOrders = (orders: Order[]): Order[] =>
-    orders.map((order, i) =>
-        [order[0], order[1], orders.slice(0, i + 1).reduce((a, b) =>
-            a + b[1], 0)])
-
-
+const sumOrders = (orders: Order[]) =>
+    orders?.reduce((acc: Order[], current: Order) => {
+        const last: Order = acc.length > 0 ? acc[acc.length - 1] : [0, 0, 0];
+        const newOrder: Order = [current[0], current[1], last[2] + current[1]];
+        return [...acc, newOrder];
+    }, [] as Order[])
 
 export const FeedReducer = (state: any, action: any) => {
     switch (action.type) {
