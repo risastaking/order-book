@@ -1,24 +1,29 @@
-import { OrderBook } from "../types/order-book"
+import { OrderBook } from '../types/order-book'
 
 export const AppReducer = (state: any, action: any) => {
     switch (action.type) {
         case 'start':
             let socket = new WebSocket('wss://www.cryptofacilities.com/ws/v1')
-            socket.onopen = () => socket.send(
-                JSON.stringify({
-                    event: 'subscribe',
-                    feed: state.feed,
-                    product_ids: [state.productId]
-                }))
+            socket.onopen = () =>
+                socket.send(
+                    JSON.stringify({
+                        event: 'subscribe',
+                        feed: state.feed,
+                        product_ids: [state.productId],
+                    })
+                )
             socket.onmessage = (event: any) => {
                 requestAnimationFrame(() => {
                     let eventData = JSON.parse(event.data)
-                    action.value({ type: eventData?.event || eventData?.feed, value: eventData })
+                    action.value({
+                        type: eventData?.event || eventData?.feed,
+                        value: eventData,
+                    })
                 })
             }
             return {
                 ...state,
-                socket: socket
+                socket: socket,
             }
         case 'stop':
             action.value?.current?.close()
@@ -27,7 +32,7 @@ export const AppReducer = (state: any, action: any) => {
                 socket: null,
                 info: null,
                 subscribed: null,
-                book: new OrderBook([], [])
+                book: new OrderBook([], []),
             }
         default:
             return state

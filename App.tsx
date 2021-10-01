@@ -1,10 +1,9 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
-import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom';
-import OrderBookView from './components/OrderBookView';
-import './css/app.scss';
-import { OrderBook } from './types/order-book';
-
+import * as React from 'react'
+import * as ReactDOM from 'react-dom'
+import { BrowserRouter as Router, Link, Route, Switch } from 'react-router-dom'
+import OrderBookView from './components/OrderBookView'
+import './css/app.scss'
+import { OrderBook } from './types/order-book'
 
 const initialAppState = {
     productId: 'PI_XBTUSD',
@@ -12,7 +11,7 @@ const initialAppState = {
     socket: null,
     info: null,
     subscribed: null,
-    book: { bids: [], asks: [] } as OrderBook
+    book: { bids: [], asks: [] } as OrderBook,
 }
 
 class App extends React.Component<{}, {}> {
@@ -21,12 +20,8 @@ class App extends React.Component<{}, {}> {
             <Router>
                 <div>
                     <div>
-                        <Link to={'/'}>
-                            Home
-                        </Link>
-                        <Link to={'/apitest'}>
-                            API Test
-                        </Link>
+                        <Link to={'/'}>Home</Link>
+                        <Link to={'/apitest'}>API Test</Link>
                     </div>
                     <div>
                         <Switch>
@@ -40,9 +35,8 @@ class App extends React.Component<{}, {}> {
                     </div>
                 </div>
             </Router>
-
-        );
+        )
     }
 }
 
-ReactDOM.render(<App />, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'))

@@ -7,8 +7,5 @@
         "strictNullChecks": true,
         "esModuleInterop": true
     },
-    "exclude": [
-        "node_modules",
-        ".parcel-cache"
-    ]
+    "exclude": ["node_modules", ".parcel-cache"]
 }
