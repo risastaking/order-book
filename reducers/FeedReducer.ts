@@ -1,3 +1,4 @@
+import { AppState } from '../types/App'
 import {
     InfoEvent,
     SubscribedEvent,
@@ -6,46 +7,43 @@ import {
 } from '../types/events'
 import { OrderBook } from '../types/order-book'
 
-export const FeedReducer = (state: any, action: any) => {
+enum ActionType {
+    INFO = 'info',
+    SUBSCRIBED = 'subscribed',
+    BOOK_UI_SNAPSHOT = 'book_ui_1_snapshot',
+    BOOK_UI_DELTA = 'book_ui_1',
+}
+
+type Action =
+    | { type: ActionType.INFO; value: InfoEvent }
+    | { type: ActionType.SUBSCRIBED; value: SubscribedEvent }
+    | { type: ActionType.BOOK_UI_SNAPSHOT; value: SnapshotEvent }
+    | { type: ActionType.BOOK_UI_DELTA; value: DeltaEvent }
+
+export const FeedReducer = (state: AppState, action: Action) => {
     switch (action.type) {
-        case 'info':
+        case ActionType.INFO:
             return {
                 ...state,
-                info: action.value as InfoEvent,
+                info: action.value,
             }
-        case 'subscribed':
+        case ActionType.SUBSCRIBED:
             return {
                 ...state,
-                subscribed: action.value as SubscribedEvent,
+                subscribed: action.value,
             }
-        case 'book_ui_1_snapshot':
-            let e = action.value as SnapshotEvent
+        case ActionType.BOOK_UI_SNAPSHOT:
+            let e = action.value
             return {
                 ...state,
-                book: new OrderBook(e.bids, e.asks)
-                ,
+                book: new OrderBook(e.bids, e.asks),
             }
-        case 'book_ui_1':
-            // return {
-            //     ...state,
-            //     book: {
-            //         ...calculateBook(
-            //             [
-            //                 ...mergeOrders(
-            //                     state.book.bids,
-            //                     (action.value as DeltaEvent).bids
-            //                 ),
-            //             ],
-            //             [
-            //                 ...mergeOrders(
-            //                     state.book.asks,
-            //                     (action.value as DeltaEvent).asks
-            //                 ),
-            //             ]
-            //         ),
-            //     },
-            // }
-            return state
+        case ActionType.BOOK_UI_DELTA:
+            let d = action.value
+            return {
+                ...state,
+                book: state?.book?.applyDeltas(d.bids, d.asks),
+            }
         default:
             return state
     }

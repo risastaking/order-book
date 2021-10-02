@@ -3,8 +3,13 @@ import { Order } from '../types/order-book'
 import { combineReducers, FeedReducer, AppReducer } from '../reducers'
 import { AppState } from '../types/App'
 import { usePageVisibility } from '../hooks/visibility'
+import { ActionType } from '../reducers/AppReducer'
 
-const OrderBookView = ({ initialState }: AppState) => {
+type OrderBookViewProps = {
+    initialState: AppState
+  };
+
+  const OrderBookView = ({ initialState }: OrderBookViewProps) => {
     //TODO: move to app level, should only have dispatch here
     const combinedReducer = combineReducers(AppReducer, FeedReducer)
     const [state, dispatch] = useReducer(combinedReducer, initialState)
@@ -14,11 +19,11 @@ const OrderBookView = ({ initialState }: AppState) => {
 
     useEffect(() => {
         if (isVisible) {
-            dispatch({ type: 'start', value: dispatch })
+            dispatch({ type: ActionType.START, value: dispatch })
         } else {
-            dispatch({ type: 'stop', value: socket })
+            dispatch({ type: ActionType.STOP, value: socket })
         }
-        return () => dispatch({ type: 'stop', value: socket })
+        return () => dispatch({ type: ActionType.STOP, value: socket })
     }, [isVisible])
     return (
         <div>
