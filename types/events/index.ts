@@ -1,8 +1,8 @@
-import { Order } from '../order-book'
+import { Order, OrderFeed } from '../order-book'
 
 export interface DeltaEvent {
-    asks: Order[]
-    bids: Order[]
+    asks: OrderFeed[]
+    bids: OrderFeed[]
     feed: string
     product_id: string
 }
@@ -11,8 +11,8 @@ export interface InfoEvent {
     version: number
 }
 export interface SnapshotEvent {
-    asks: Order[]
-    bids: Order[]
+    asks: OrderFeed[]
+    bids: OrderFeed[]
     feed: string
     numLevels: number
     productId: string

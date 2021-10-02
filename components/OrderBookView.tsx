@@ -27,26 +27,29 @@ const OrderBookView = ({ initialState }: AppState) => {
             <h2>Asks</h2>
             <table>
                 <tbody>
-                    {state.book?.asks.map((ask: Order) => (
-                        <tr key={ask[0]}>
-                            <td>{ask[0]}</td>
-                            <td>{ask[1]}</td>
-                            <td>{ask[2]}</td>
-                        </tr>
-                    ))}
+                    {state.book?.asks
+                    .reverse()
+                        .map((o: Order) => (
+                            <tr key={o.price}>
+                                <td>{o.price}</td>
+                                <td>{o.size}</td>
+                                <td>{o.total}</td>
+                            </tr>
+                        ))}
                 </tbody>
             </table>
             <p>Spread: {state.book?.spread}</p>
             <h2>Bids</h2>
             <table>
                 <tbody>
-                    {state.book?.bids.map((bid: Order) => (
-                        <tr key={bid[0]}>
-                            <td>{bid[0]}</td>
-                            <td>{bid[1]}</td>
-                            <td>{bid[2]}</td>
-                        </tr>
-                    ))}
+                    {state.book?.bids
+                        .map((o: Order) => (
+                            <tr key={o.price}>
+                                <td>{o.price}</td>
+                                <td>{o.size}</td>
+                                <td>{o.total}</td>
+                            </tr>
+                        ))}
                 </tbody>
             </table>
         </div>
