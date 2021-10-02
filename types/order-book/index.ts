@@ -1,3 +1,5 @@
+import { DeltaEvent } from '../events'
+
 export type OrderFeed = [number, number]
 export type OrderSide = 'bid' | 'ask'
 export interface Order {
@@ -19,16 +21,16 @@ export class OrderBook {
         this.pushOrdersTo(this.bids, bids, 'bid')
         this.pushOrdersTo(this.asks, asks, 'ask')
     }
-    private pushOrdersTo(to: Order[], orders: OrderFeed[], side: OrderSide) {
+    private pushOrdersTo(dest: Order[], orders: OrderFeed[], side: OrderSide) {
         for (let i = 0; i < orders.length; i++) {
-            let prev = to[i - 1],
+            let prev = dest[i - 1],
                 price = orders[i][0],
                 size = orders[i][1],
                 total = i === 0 ? size : prev.total + size
             if (size !== 0) {
-                to.push({ side, price, size, total } as Order)
+                dest.push({ side, price, size, total } as Order)
             } else {
-                this.deleteOrdersFrom(to, price, side)
+                this.deleteOrdersFrom(dest, price, side)
             }
         }
     }
@@ -38,6 +40,32 @@ export class OrderBook {
         if (deleteIndex !== -1) {
             from.splice(deleteIndex, 1)
             this.sumSizes(deleteIndex, side)
+        }
+    }
+    public applyDeltas(bids: OrderFeed[], asks: OrderFeed[]): OrderBook {
+        this.insertOrdersTo(this.bids, bids, 'bid')
+        this.insertOrdersTo(this.asks, asks, 'ask')
+        return this
+    }
+    private insertOrdersTo(dest: Order[], orders: OrderFeed[], side: OrderSide) {
+        orders.forEach((o: OrderFeed) => {
+            this.insertOrderTo(dest, { price: o[0], size: o[1], side } as Order)
+        })
+    }
+
+    private insertOrderTo(dest: Order[], order: Order): void {
+        if (order.size === 0) {
+            this.deleteOrdersFrom(dest, order.price, order.side)
+            return
+        }
+
+        let insertIndex = dest.findIndex((o) => o.price === order.price)
+        if (insertIndex !== -1) {
+            dest[insertIndex].size = order.size
+            // todo - check if we need to update total
+            this.sumSizes(insertIndex, order.side)
+        } else {
+            // todo: insert new order at correct index
         }
     }
 
@@ -58,20 +86,4 @@ export class OrderBook {
             }
         }
     }
-    //addBids = (bids: OrderFeed[]) { }
-    //iterate list
-    //keep running total
-    // if price matches, update order size, total - splice if size is 0
-    // keep orders sorted at all times!
-
-    // for (let newOrder of bids) {
-    //     let total = 0
-    //     if(newOrder[1] === 0) {
-    //         this.bids.delete(newOrder[0])
-    //     }
-    //     for(let order of this.bids) {
-    //         // set new bid
-
-    //     }
-    //}
 }
