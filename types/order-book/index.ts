@@ -22,17 +22,19 @@ export class OrderBook {
     //asks ascending
     //bids descending
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
-        this.pushOrdersTo(this.bids, bids, 'bid')
-        this.pushOrdersTo(this.asks, asks, 'ask')
+
+        //TODO: verify input is sorted properly
+        this.insertOrders(this.bids, bids, 'bid')
+        this.insertOrders(this.asks, asks, 'ask')
     }
 
     public applyDeltas(bids: OrderFeed[], asks: OrderFeed[]): OrderBook {
-        this.insertOrdersTo(this.bids, bids, 'bid')
-        this.insertOrdersTo(this.asks, asks, 'ask')
+        this.upsertOrders(this.bids, bids, 'bid')
+        this.upsertOrders(this.asks, asks, 'ask')
         return this
     }
 
-    private pushOrdersTo(dest: Order[], orders: OrderFeed[], side: OrderSide) {
+    private insertOrders(dest: Order[], orders: OrderFeed[], side: OrderSide) {
         for (let i = 0; i < orders.length; i++) {
             let prev = dest[i - 1],
                 price = orders[i][0],
@@ -42,14 +44,7 @@ export class OrderBook {
         }
     }
 
-    private deleteOrdersFrom(from: Order[], price: number, side: OrderSide) {
-        let deleteIndex = _findIndex(from, (o: Order) => o.price === price)
-        if (deleteIndex !== -1) {
-            from.splice(deleteIndex, 1)
-            this.sumSizes(deleteIndex, side)
-        }
-    }
-    private insertOrdersTo(
+    private upsertOrders(
         dest: Order[],
         orders: OrderFeed[],
         side: OrderSide
@@ -76,7 +71,6 @@ export class OrderBook {
             dest[updateIndex].size = order.size
             this.sumSizes(updateIndex, order.side)
         } else {
-            debugger
             let insertIndex = _sortedIndexBy(dest, order, this.orderBookIteratee)
             dest.splice(insertIndex,0,order)
             this.sumSizes(insertIndex, order.side)
@@ -86,23 +80,32 @@ export class OrderBook {
     private sumSizes(fromIndex: number, side: OrderSide) {
         if (side === 'bid') {
             for (let i = fromIndex; i < this.bids.length; i++) {
-                let order = this.bids[i] || { size: 0 },
-                    prev = this.bids[i - 1] || { total: 0 }
+                let order = this.bids[i] || { size: 0 }, //TODO: can we remove || when locking array?
+                    prev = this.bids[i - 1]
                 order.total = i === 0 ? order.size : prev.total + order.size
+                if(order.size === 0) {
+                    this.bids.splice(i, 1)
+                    i--
+                }
             }
         } else {
             for (let i = fromIndex - 1; i >= this.asks.length; i--) {
-                let order = this.asks[i] || { size: 0 },
-                    prev = this.asks[i + 1] || { total: 0 }
+                let order = this.asks[i] || { size: 0 }, //TODO: can we remove || when locking array?
+                    prev = this.asks[i + 1]
                 order.total =
                     i === this.asks.length - 1
                         ? order.size
                         : prev.total + order.size
+                        if(order.size === 0) {
+                            this.asks.splice(i, 1)
+                            i++
+                        }
             }
         }
-        this.trimOrders()
-        
+
         //TODO: prune 0 value orders
+
+        this.trimOrders()
     }
 
     private trimOrders() {
