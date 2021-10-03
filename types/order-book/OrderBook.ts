@@ -110,13 +110,13 @@ export class OrderBook {
 
     private sumSizes = (book: OrderBook) => {
         for (let i = 0; i < book.bids.length - 1; i++) {
-            let order = book.bids[i], //|| { size: 0 }, //TODO: can we remove || when locking array?
+            let order = book.bids[i],
                 prev = book.bids[i - 1]
             order.total = i === 0 ? order.size : prev.total + order.size
         }
 
         for (let i = book.asks.length - 1; i >= 0; i--) {
-            let order = book.asks[i], //|| { size: 0 }, //TODO: can we remove || when locking array?
+            let order = book.asks[i],
                 prev = book.asks[i + 1]
             order.total =
                 i === book.asks.length - 1
