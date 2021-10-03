@@ -42,7 +42,7 @@ const OrderBookView = ({ initialState }: OrderBookViewProps) => {
                 </tbody>
             </table>
             <p>
-                Spread: {state.book?.spread()} {state.book?.spreadPercent()}
+                Spread: {state.book?.spread()} ({state.book?.spreadPercent()} %)
             </p>
             <h2>Bids</h2>
             <table>

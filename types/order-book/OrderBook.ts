@@ -86,7 +86,7 @@ export class OrderBook {
      * different directions based on the side
      */
     private orderBookIteratee = (o: Order) =>
-        o?.side === 'bid' ? -o?.price : o?.price
+        o.side === 'bid' ? -o.price : o.price
 
     private upsertOrder = (order: Order) => {
         let orders = order.side === 'bid' ? this.bids : this.asks
