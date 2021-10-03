@@ -1,4 +1,4 @@
-import { Order, OrderFeed } from '../order-book'
+import { Order, OrderFeed } from '../order-book/OrderBook'
 
 export interface DeltaEvent {
     asks: OrderFeed[]

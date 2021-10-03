@@ -5,7 +5,7 @@ import OrderBookView from './components/OrderBookView'
 import './css/app.scss'
 import { usePageVisibility } from './hooks/visibility'
 import { AppState } from './types/App'
-import { OrderBook } from './types/order-book'
+import { OrderBook } from './types/order-book/OrderBook'
 
 const initialAppState = {
     productId: 'PI_XBTUSD',

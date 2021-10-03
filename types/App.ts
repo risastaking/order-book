@@ -1,5 +1,5 @@
 import { InfoEvent, SubscribedEvent } from './events'
-import { OrderBook } from './order-book'
+import { OrderBook } from './order-book/OrderBook'
 
 export interface AppState {
         productId: string

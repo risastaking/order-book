@@ -5,7 +5,7 @@ import {
     SnapshotEvent,
     DeltaEvent,
 } from '../types/events'
-import { OrderBook } from '../types/order-book'
+import { OrderBook } from '../types/order-book/OrderBook'
 
 enum ActionType {
     INFO = 'info',
