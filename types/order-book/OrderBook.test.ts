@@ -13,7 +13,7 @@ test('snapshot', () => {
     let actual = new OrderBook(bids, asks)
     expect(actual).toMatchSnapshot()
 })
-test('totals are sorted properly', () => {
+test('totals are sorted descending towards spread', () => {
     let actual = new OrderBook(bids, asks)
     actual.processFeed([[1, 100]], [[50000, 100]])
 

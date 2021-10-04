@@ -24,8 +24,6 @@ export class OrderBook {
     readonly spreadPercent = () =>
         round((this.spread() / this.midPoint()) * 100)
 
-    //asks ascending
-    //bids descending
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
     }
@@ -36,7 +34,7 @@ export class OrderBook {
             () => this
         )(this)
 
-    public applyOrders =
+    private applyOrders =
         (feed: OrderFeed[], side: OrderSide) => (book: OrderBook) =>
             flow(
                 book.mapOrders,
@@ -55,10 +53,9 @@ export class OrderBook {
                     }
                 },
                 () => book
-            )(feed, side)
+            )(feed)
 
-    private mapOrders = (feed: OrderFeed[], side: OrderSide): Order[] =>
-        feed.map(this.mapOrder)
+    private mapOrders = (feed: OrderFeed[]): Order[] => feed.map(this.mapOrder)
 
     private mapOrder = (feed: OrderFeed): Order => ({
         price: feed[0],
@@ -70,28 +67,21 @@ export class OrderBook {
 
     private sumSizes =
         (side: OrderSide) =>
-        (orders: Order[]): Order[] => {
-            switch (side) {
-                case 'bid':
-                    return orders.reduce((acc, order, i) => {
-                        acc[i].total =
-                            i === 0 ? order.size : acc[i - 1].total + order.size
-                        return acc
-                    }, orders)
-                case 'ask':
-                    for (let i = orders.length - 1; i >= 0; i--) {
-                        let order = orders[i],
-                            prev = orders[i + 1]
-                        order.total =
-                            i === orders.length - 1
-                                ? order.size
-                                : prev.total + order.size
-                    }
-                    return orders
-                default:
-                    return orders
-            }
-        }
+        (orders: Order[]): Order[] =>
+            side === 'bid'
+                ? orders.reduce((acc, order, i) => {
+                      acc[i].total =
+                          i === 0 ? order.size : acc[i - 1].total + order.size
+                      return acc
+                  }, orders)
+                : orders.reduceRight((acc, order, i) => {
+                      acc[i].total =
+                          i === acc.length - 1
+                              ? order.size
+                              : acc[i + 1].total + order.size
+                      return acc
+                  }, orders)
+
     private filterZeroSizes = (orders: Order[]): Order[] =>
         orders.filter((o) => o.size > 0)
 
