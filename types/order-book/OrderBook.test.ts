@@ -42,7 +42,22 @@ test('apply deltas ', () => {
         [47224.5, 100],
     ]
     let actual = new OrderBook(bids, asks)
-    actual = actual.applyDeltas(bidDeltas, askDeltas)
+    actual = actual.processFeed(bidDeltas, askDeltas)
     expect(actual.bids.reduce((acc, curr) => acc + curr.size, 0)).toBe(100)
     expect(actual.asks.reduce((acc, curr) => acc + curr.size, 0)).toBe(725)
+})
+
+test('empty deltas', () => {
+    let actual = new OrderBook(bids, asks)
+    actual = actual.processFeed([], [])
+})
+
+test('levels deep', () => {
+    let book = new OrderBook(bids, asks)
+    book.levelsDeep = 1
+
+    let actual = book.processFeed([[50000, 100]], [])
+
+    expect(actual.bids.length).toBe(1)
+    expect(actual.asks.length).toBe(1)
 })

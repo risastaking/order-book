@@ -42,7 +42,7 @@ export const FeedReducer = (state: AppState, action: Action) => {
             let d = action.value
             return {
                 ...state,
-                book: state?.book?.applyDeltas(d.bids, d.asks),
+                book: state?.book?.processFeed(d.bids, d.asks),
             }
         default:
             return state
