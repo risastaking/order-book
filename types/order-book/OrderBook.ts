@@ -17,11 +17,12 @@ export class OrderBook {
     public levelsDeep = 10
     public bids: Order[] = []
     public asks: Order[] = []
-    readonly spread = () => this.topAsk() - this.topBid()
-    readonly spreadPercent = () => round((this.spread() / this.topBid()) * 100)
-
-    private topBid = (): number => this.bids[0]?.price
-    private topAsk = (): number => this.asks.slice(-1)[0]?.price
+    private highestBid = () => this.bids[0]?.price
+    private lowestAsk = () => this.asks.slice(-1)[0]?.price
+    readonly spread = () => this.lowestAsk() - this.highestBid()
+    readonly midPoint = () => this.lowestAsk() + this.highestBid() / 2
+    readonly spreadPercent = () =>
+        round((this.spread() / this.midPoint()) * 100)
 
     //asks ascending
     //bids descending
@@ -72,13 +73,11 @@ export class OrderBook {
         (orders: Order[]): Order[] => {
             switch (side) {
                 case 'bid':
-                    for (let i = 0; i < orders.length - 1; i++) {
-                        let order = orders[i],
-                            prev = orders[i - 1]
-                        order.total =
-                            i === 0 ? order.size : prev.total + order.size
-                    }
-                    return orders
+                    return orders.reduce((acc, order, i) => {
+                        acc[i].total =
+                            i === 0 ? order.size : acc[i - 1].total + order.size
+                        return acc
+                    }, orders)
                 case 'ask':
                     for (let i = orders.length - 1; i >= 0; i--) {
                         let order = orders[i],
@@ -103,12 +102,6 @@ export class OrderBook {
                 ? orders.slice(0, this.levelsDeep)
                 : orders.slice(-this.levelsDeep)
 
-    /**
-     * BIDS are sorted DESCENDING
-     * ASKS are sorted ASCENDING
-     * We use this to iterate
-     * different directions based on the side
-     */
     private upsertSorted = (side: OrderSide, newOrders: Order[]): Order[] =>
         newOrders.reduce(
             (acc: Order[], order: Order) => {
@@ -120,8 +113,10 @@ export class OrderBook {
                 if (updateIndex !== -1) {
                     acc[updateIndex].size = order.size
                 } else {
-                    let insertIndex = _sortedIndexBy(acc, order, (o: Order) =>
-                        side === 'bid' ? -o.price : o.price
+                    let insertIndex = _sortedIndexBy(
+                        acc,
+                        order,
+                        (o: Order) => -o.price
                     )
                     acc.splice(insertIndex, 0, order)
                 }
