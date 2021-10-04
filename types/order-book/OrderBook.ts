@@ -6,7 +6,10 @@ import { flow } from 'lodash/fp'
 import { round } from '../../formats'
 
 export type OrderFeed = [number, number]
-export type OrderSide = 'bid' | 'ask'
+export enum OrderSide {
+    BID = 'bid',
+    ASK = 'ask',
+}
 export interface Order {
     price: number
     size: number
@@ -21,37 +24,26 @@ export class OrderBook {
     private lowestAsk = () => this.asks.slice(-1)[0]?.price
     readonly spread = () => this.lowestAsk() - this.highestBid()
     readonly midPoint = () => this.lowestAsk() + this.highestBid() / 2
-    readonly spreadPercent = () =>
-        round((this.spread() / this.midPoint()) * 100)
+    readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100)
 
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
     }
     public processFeed = (bids: OrderFeed[], asks: OrderFeed[]) =>
         flow(
-            this.applyOrders(bids, 'bid'),
-            this.applyOrders(asks, 'ask'),
+            this.processOrders(bids, OrderSide.BID),
+            this.processOrders(asks, OrderSide.ASK),
             () => this
         )(this)
 
-    private applyOrders =
-        (feed: OrderFeed[], side: OrderSide) => (book: OrderBook) =>
+    private processOrders = (feed: OrderFeed[], side: OrderSide) => (book: OrderBook) =>
             flow(
                 book.mapOrders,
                 book.upsert(side),
                 book.filterZeroSizes,
-                book.sumSizes(side),
+                book.sumOrders(side),
                 book.trimOrders(side),
-                (orders) => {
-                    switch (side) {
-                        case 'bid':
-                            book.bids = [...orders]
-                            break
-                        case 'ask':
-                            book.asks = [...orders]
-                            break
-                    }
-                },
+                book.commitOrders(side),
                 () => book
             )(feed)
 
@@ -62,37 +54,31 @@ export class OrderBook {
         size: feed[1],
         total: 0,
     })
-    private upsert = (side: OrderSide) => (newOrders: Order[]) =>
-        this.upsertSorted(side, newOrders)
 
-    private sumSizes =
-        (side: OrderSide) =>
-        (orders: Order[]): Order[] =>
-            side === 'bid'
-                ? orders.reduce((acc, order, i) => {
-                      acc[i].total =
-                          i === 0 ? order.size : acc[i - 1].total + order.size
-                      return acc
-                  }, orders)
-                : orders.reduceRight((acc, order, i) => {
-                      acc[i].total =
-                          i === acc.length - 1
-                              ? order.size
-                              : acc[i + 1].total + order.size
-                      return acc
-                  }, orders)
+    private sumOrders = (side: OrderSide) => (orders: Order[]): Order[] =>
+        side === OrderSide.BID
+            ? orders.reduce((acc, order, i) => {
+                    acc[i].total =
+                        i === 0 ? order.size : acc[i - 1].total + order.size
+                    return acc
+                }, orders)
+            : orders.reduceRight((acc, order, i) => {
+                    acc[i].total =
+                        i === acc.length - 1
+                            ? order.size
+                            : acc[i + 1].total + order.size
+                    return acc
+                }, orders)
 
     private filterZeroSizes = (orders: Order[]): Order[] =>
         orders.filter((o) => o.size > 0)
 
-    private trimOrders =
-        (side: OrderSide) =>
-        (orders: Order[]): Order[] =>
-            side === 'bid'
-                ? orders.slice(0, this.levelsDeep)
-                : orders.slice(-this.levelsDeep)
+    private trimOrders = (side: OrderSide) => (orders: Order[]): Order[] =>
+        side === OrderSide.BID
+            ? orders.slice(0, this.levelsDeep)
+            : orders.slice(-this.levelsDeep)
 
-    private upsertSorted = (side: OrderSide, newOrders: Order[]): Order[] =>
+    private upsert = (side: OrderSide) => (newOrders: Order[]): Order[] =>
         newOrders.reduce(
             (acc: Order[], order: Order) => {
                 let updateIndex = _findIndex(
@@ -101,8 +87,10 @@ export class OrderBook {
                 )
 
                 if (updateIndex !== -1) {
+                    // Found an existing order, update it
                     acc[updateIndex].size = order.size
                 } else {
+                    // No existing order, insert it
                     let insertIndex = _sortedIndexBy(
                         acc,
                         order,
@@ -112,6 +100,9 @@ export class OrderBook {
                 }
                 return acc
             },
-            side === 'bid' ? this.bids : this.asks
+            side === OrderSide.BID ? this.bids : this.asks
         )
+
+    private commitOrders = (side: OrderSide) => (orders: Order[]) =>
+        side === OrderSide.BID ? (this.bids = orders) : (this.asks = orders)
 }

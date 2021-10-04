@@ -27,6 +27,7 @@ OrderBook {
       "total": 300,
     },
   ],
+  "commitOrders": [Function],
   "filterZeroSizes": [Function],
   "highestBid": [Function],
   "levelsDeep": 10,
@@ -37,9 +38,8 @@ OrderBook {
   "processFeed": [Function],
   "spread": [Function],
   "spreadPercent": [Function],
-  "sumSizes": [Function],
+  "sumOrders": [Function],
   "trimOrders": [Function],
   "upsert": [Function],
-  "upsertSorted": [Function],
 }
 `;
