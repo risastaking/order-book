@@ -37,15 +37,15 @@ export class OrderBook {
         )(this)
 
     private processOrders = (feed: OrderFeed[], side: OrderSide) => (book: OrderBook) =>
-            flow(
-                book.mapOrders,
-                book.upsert(side),
-                book.filterZeroSizes,
-                book.sumOrders(side),
-                book.trimOrders(side),
-                book.commitOrders(side),
-                () => book
-            )(feed)
+        flow(
+            book.mapOrders,
+            book.upsert(side),
+            book.filterEmptyOrders,
+            book.sumOrders(side),
+            book.trimBook(side),
+            book.commitOrders(side),
+            () => book
+        )(feed)
 
     private mapOrders = (feed: OrderFeed[]): Order[] => feed.map(this.mapOrder)
 
@@ -70,10 +70,10 @@ export class OrderBook {
                     return acc
                 }, orders)
 
-    private filterZeroSizes = (orders: Order[]): Order[] =>
+    private filterEmptyOrders = (orders: Order[]): Order[] =>
         orders.filter((o) => o.size > 0)
 
-    private trimOrders = (side: OrderSide) => (orders: Order[]): Order[] =>
+    private trimBook = (side: OrderSide) => (orders: Order[]): Order[] =>
         side === OrderSide.BID
             ? orders.slice(0, this.levelsDeep)
             : orders.slice(-this.levelsDeep)
@@ -81,21 +81,14 @@ export class OrderBook {
     private upsert = (side: OrderSide) => (newOrders: Order[]): Order[] =>
         newOrders.reduce(
             (acc: Order[], order: Order) => {
-                let updateIndex = _findIndex(
-                    acc,
-                    (o: Order) => o?.price === order.price
-                )
+                let updateIndex = _findIndex(acc,(o: Order) => o?.price === order.price)
 
                 if (updateIndex !== -1) {
-                    // Found an existing order, update it
+                    // Update
                     acc[updateIndex].size = order.size
                 } else {
-                    // No existing order, insert it
-                    let insertIndex = _sortedIndexBy(
-                        acc,
-                        order,
-                        (o: Order) => -o.price
-                    )
+                    // Insert while maintaining sort order
+                    let insertIndex = _sortedIndexBy(acc,order,(o: Order) => -o.price)
                     acc.splice(insertIndex, 0, order)
                 }
                 return acc
