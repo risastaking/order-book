@@ -8,7 +8,6 @@ import { round } from '../../formats'
 export type OrderFeed = [number, number]
 export type OrderSide = 'bid' | 'ask'
 export interface Order {
-    side: OrderSide
     price: number
     size: number
     total: number
@@ -42,7 +41,7 @@ export class OrderBook {
                 book.mapOrders,
                 book.upsert(side),
                 book.filterZeroSizes,
-                book.sumSizes,
+                book.sumSizes(side),
                 book.trimOrders(side),
                 (orders) => {
                     switch (side) {
@@ -58,10 +57,9 @@ export class OrderBook {
             )(feed, side)
 
     private mapOrders = (feed: OrderFeed[], side: OrderSide): Order[] =>
-        feed.map((o) => this.mapOrder(o, side))
+        feed.map(this.mapOrder)
 
-    private mapOrder = (feed: OrderFeed, side: OrderSide): Order => ({
-        side: side,
+    private mapOrder = (feed: OrderFeed): Order => ({
         price: feed[0],
         size: feed[1],
         total: 0,
@@ -69,46 +67,41 @@ export class OrderBook {
     private upsert = (side: OrderSide) => (newOrders: Order[]) =>
         this.upsertSorted(side, newOrders)
 
-    private sumSizes = (orders: Order[]): Order[] => {
-        switch (orders[0]?.side) {
-            case 'bid':
-                for (let i = 0; i < orders.length - 1; i++) {
-                    let order = orders[i],
-                        prev = orders[i - 1]
-                    order.total = i === 0 ? order.size : prev.total + order.size
-                }
-                return orders
-            case 'ask':
-                for (let i = orders.length - 1; i >= 0; i--) {
-                    let order = orders[i],
-                        prev = orders[i + 1]
-                    order.total =
-                        i === orders.length - 1
-                            ? order.size
-                            : prev.total + order.size
-                }
-                return orders
-            default:
-                return orders
-        }
-    }
-    private filterZeroSizes = (orders: Order[]): Order[] =>
-        orders.filter((o) => o.size > 0)
-
-    private trimOrders =
+    private sumSizes =
         (side: OrderSide) =>
         (orders: Order[]): Order[] => {
-            debugger
             switch (side) {
                 case 'bid':
-                    return orders.slice(0, this.levelsDeep)
+                    for (let i = 0; i < orders.length - 1; i++) {
+                        let order = orders[i],
+                            prev = orders[i - 1]
+                        order.total =
+                            i === 0 ? order.size : prev.total + order.size
+                    }
+                    return orders
                 case 'ask':
-                    orders.splice(0, orders.length - this.levelsDeep)
+                    for (let i = orders.length - 1; i >= 0; i--) {
+                        let order = orders[i],
+                            prev = orders[i + 1]
+                        order.total =
+                            i === orders.length - 1
+                                ? order.size
+                                : prev.total + order.size
+                    }
                     return orders
                 default:
                     return orders
             }
         }
+    private filterZeroSizes = (orders: Order[]): Order[] =>
+        orders.filter((o) => o.size > 0)
+
+    private trimOrders =
+        (side: OrderSide) =>
+        (orders: Order[]): Order[] =>
+            side === 'bid'
+                ? orders.slice(0, this.levelsDeep)
+                : orders.slice(-this.levelsDeep)
 
     /**
      * BIDS are sorted DESCENDING
