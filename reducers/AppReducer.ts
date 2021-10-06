@@ -4,10 +4,13 @@ import { AppState } from "../types/App"
 export enum ActionType {
     START = 'start',
     STOP = 'stop',
+    TOGGLE_FEED = 'toggle_feed',
 }
 type Action =
     | { type: ActionType.START; value: React.Dispatch<any> }
-    | { type: ActionType.STOP; value: React.MutableRefObject<WebSocket> }
+    | { type: ActionType.STOP }
+    | { type: ActionType.TOGGLE_FEED; value: React.Dispatch<string> }
+
 
 export const AppReducer = (state: AppState, action: Action) => {
     switch (action.type) {
@@ -32,16 +35,39 @@ export const AppReducer = (state: AppState, action: Action) => {
             }
             return {
                 ...state,
-                socket: socket,
+                socket,
             }
         case ActionType.STOP:
-            action.value?.current?.close()
+            state.socket?.send(
+                JSON.stringify({
+                    event: 'unsubscribe',
+                    feed: state.feed,
+                    product_ids: [state.productId],
+                })
+            )
             return {
                 ...state,
                 socket: null,
                 info: null,
                 subscribed: null,
                 book: null,
+            }
+            case ActionType.TOGGLE_FEED:
+                state.socket?.send(
+                    JSON.stringify({
+                        event: 'unsubscribe',
+                        feed: state.feed,
+                        product_ids: [state.productId],
+                    }))
+                    state.socket?.send(
+                        JSON.stringify({
+                            event: 'subscribe',
+                            feed: state.feed,
+                            product_ids: ['PI_ETHUSD'],
+                        }))
+            return {
+                ...state,
+
             }
         default:
             return state

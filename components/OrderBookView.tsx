@@ -14,16 +14,14 @@ const OrderBookView = ({ initialState }: OrderBookViewProps) => {
     const combinedReducer = combineReducers(AppReducer, FeedReducer)
     const [state, dispatch] = useReducer(combinedReducer, initialState)
     const isVisible = usePageVisibility()
-    const socket = useRef<any>(null)
-    socket.current = state.socket
 
     useEffect(() => {
         if (isVisible) {
             dispatch({ type: ActionType.START, value: dispatch })
         } else {
-            dispatch({ type: ActionType.STOP, value: socket })
+            dispatch({ type: ActionType.STOP})
         }
-        return () => dispatch({ type: ActionType.STOP, value: socket })
+        return () => dispatch({ type: ActionType.STOP})
     }, [isVisible])
     return (
         <div>

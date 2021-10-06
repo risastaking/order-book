@@ -25,7 +25,7 @@ export class OrderBook {
     private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
     readonly spread = () => this.hasSpread() ? this.lowestAsk() - this.highestBid() : 0
     readonly midPoint = () => this.lowestAsk() + this.highestBid() / 2
-    readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100)
+    readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100) || 0
 
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
