@@ -2,7 +2,7 @@
 // https://www.measurethat.net/Benchmarks/ShowResult/228038
 import _findIndex from 'lodash/findIndex'
 import _sortedIndexBy from 'lodash/sortedIndexBy'
-import { flow } from 'lodash/fp'
+import { flow, head, last, some, isNull, all } from 'lodash/fp'
 import { round } from '../../formats'
 
 export type OrderFeed = [number, number]
@@ -17,12 +17,13 @@ export interface Order {
 }
 
 export class OrderBook {
-    public levelsDeep = 10
+    public levelsDeep = 25
     public bids: Order[] = []
-    public asks: Order[] = []
-    private highestBid = () => this.bids[0]?.price
-    private lowestAsk = () => this.asks.slice(-1)[0]?.price
-    readonly spread = () => this.lowestAsk() - this.highestBid()
+    public asks: Order[] = [{price: 0, size: 0, total: 0}]
+    private lowestAsk = () => last(this.asks)?.price || 0
+    private highestBid = () => head(this.bids)?.price || 0
+    private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
+    readonly spread = () => this.hasSpread() ? this.lowestAsk() - this.highestBid() : 0
     readonly midPoint = () => this.lowestAsk() + this.highestBid() / 2
     readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100)
 
@@ -34,17 +35,17 @@ export class OrderBook {
             this.processOrders(bids, OrderSide.BID),
             this.processOrders(asks, OrderSide.ASK),
             () => this
-        )(this)
+        )()
 
-    private processOrders = (feed: OrderFeed[], side: OrderSide) => (book: OrderBook) =>
+    private processOrders = (feed: OrderFeed[], side: OrderSide)  => () =>
         flow(
-            book.mapOrders,
-            book.upsert(side),
-            book.filterEmptyOrders,
-            book.sumOrders(side),
-            book.trimBook(side),
-            book.commitOrders(side),
-            () => book
+            this.mapOrders,
+            this.upsert(side),
+            this.filterEmptyOrders,
+            this.sumOrders(side),
+            this.trimBook(side),
+            this.commitOrders(side),
+            () => this
         )(feed)
 
     private mapOrders = (feed: OrderFeed[]): Order[] => feed.map(this.mapOrder)
@@ -87,7 +88,7 @@ export class OrderBook {
                     // Update
                     acc[updateIndex].size = order.size
                 } else {
-                    // Insert while maintaining sort order
+                    // Insert (while maintaining sort order)
                     let insertIndex = _sortedIndexBy(acc,order,(o: Order) => -o.price)
                     acc.splice(insertIndex, 0, order)
                 }

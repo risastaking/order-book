@@ -2,7 +2,6 @@
 
 exports[`snapshot 1`] = `
 OrderBook {
-  "applyOrders": [Function],
   "asks": Array [
     Object {
       "price": 30000,
@@ -28,18 +27,20 @@ OrderBook {
     },
   ],
   "commitOrders": [Function],
-  "filterZeroSizes": [Function],
+  "filterEmptyOrders": [Function],
+  "hasSpread": [Function],
   "highestBid": [Function],
-  "levelsDeep": 10,
+  "levelsDeep": 25,
   "lowestAsk": [Function],
   "mapOrder": [Function],
   "mapOrders": [Function],
   "midPoint": [Function],
   "processFeed": [Function],
+  "processOrders": [Function],
   "spread": [Function],
   "spreadPercent": [Function],
   "sumOrders": [Function],
-  "trimOrders": [Function],
+  "trimBook": [Function],
   "upsert": [Function],
 }
 `;

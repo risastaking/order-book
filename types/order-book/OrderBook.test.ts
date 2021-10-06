@@ -31,6 +31,13 @@ test('spread', () => {
     let actual = new OrderBook(bids, asks)
     expect(actual.spread()).toBe(1000)
 })
+test('spread with empty orders', () => {
+    let emptyAsk = new OrderBook(bids, [])
+    let emptyBid = new OrderBook([], asks)
+
+    expect(emptyAsk.spread()).toBe(0)
+    expect(emptyBid.spread()).toBe(0)
+})
 test('spread percent', () => {
     let actual = new OrderBook(bids, asks)
     actual.processFeed([[20502.5, 1000]], [])
