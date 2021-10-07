@@ -1,4 +1,11 @@
+import { ActionType } from '../../reducers/FeedReducer';
 import { Order, OrderFeed } from '../order-book/OrderBook'
+
+export interface FeedEvent {
+    event: ActionType
+    feed: string
+    product_ids: string[]
+}
 
 export interface DeltaEvent {
     asks: OrderFeed[]
@@ -18,7 +25,7 @@ export interface SnapshotEvent {
     productId: string
 }
 export interface SubscribedEvent {
-    event: string
+    event: ActionType
     feed: string
     product_ids: string[]
 }

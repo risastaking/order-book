@@ -1,50 +1,69 @@
-import { AppState } from '../types/App'
+import { AppState } from "../types/App";
 import {
-    InfoEvent,
-    SubscribedEvent,
-    SnapshotEvent,
-    DeltaEvent,
-} from '../types/events'
-import { OrderBook } from '../types/order-book/OrderBook'
+  InfoEvent,
+  SubscribedEvent,
+  SnapshotEvent,
+  DeltaEvent,
+} from "../types/events";
+import { OrderBook } from "../types/order-book/OrderBook";
 
-enum ActionType {
-    INFO = 'info',
-    SUBSCRIBED = 'subscribed',
-    BOOK_UI_SNAPSHOT = 'book_ui_1_snapshot',
-    BOOK_UI_DELTA = 'book_ui_1',
+export enum ActionType {
+  SUBSCRIBE = "subscribe",
+  INFO = "info",
+  UNSUBSCRIBE = "unsubscribe",
+  SUBSCRIBED = "subscribed",
+  SNAPSHOT = "book_ui_1_snapshot",
+  DELTA = "book_ui_1",
 }
 
-type Action =
-    | { type: ActionType.INFO; value: InfoEvent }
-    | { type: ActionType.SUBSCRIBED; value: SubscribedEvent }
-    | { type: ActionType.BOOK_UI_SNAPSHOT; value: SnapshotEvent }
-    | { type: ActionType.BOOK_UI_DELTA; value: DeltaEvent }
+export type Action =
+  | { type: ActionType.SUBSCRIBE }
+  | { type: ActionType.UNSUBSCRIBE }
+  | { type: ActionType.INFO; value: InfoEvent }
+  | { type: ActionType.SUBSCRIBED; value: SubscribedEvent }
+  | { type: ActionType.SNAPSHOT; value: SnapshotEvent }
+  | { type: ActionType.DELTA; value: DeltaEvent };
 
 export const FeedReducer = (state: AppState, action: Action) => {
-    switch (action.type) {
-        case ActionType.INFO:
-            return {
-                ...state,
-                info: action.value,
-            }
-        case ActionType.SUBSCRIBED:
-            return {
-                ...state,
-                subscribed: action.value,
-            }
-        case ActionType.BOOK_UI_SNAPSHOT:
-            let e = action.value
-            return {
-                ...state,
-                book: new OrderBook(e.bids, e.asks),
-            }
-        case ActionType.BOOK_UI_DELTA:
-            let d = action.value
-            return {
-                ...state,
-                book: state?.book?.processFeed(d.bids, d.asks),
-            }
-        default:
-            return state
-    }
-}
+  switch (action.type) {
+    case ActionType.INFO:
+      return {
+        ...state,
+        info: action.value,
+      };
+    case ActionType.SUBSCRIBE:
+      state.socket?.sendJson({
+          event: ActionType.SUBSCRIBE,
+          feed: state.feed,
+          product_ids: [state.productId]
+        });
+        return state
+      case ActionType.UNSUBSCRIBE:
+        state.socket?.sendJson({
+            event: ActionType.UNSUBSCRIBE,
+            feed: state.feed,
+            product_ids: [state.productId],
+          })
+          return {
+            ...state,
+            subscribed: false,
+          };
+    case ActionType.SUBSCRIBED:
+      return {
+        ...state,
+        subscribed: true,
+      };
+    case ActionType.SNAPSHOT:
+      return {
+        ...state,
+        book: new OrderBook(action.value.bids, action.value.asks),
+      };
+    case ActionType.DELTA:
+      return {
+        ...state,
+        book: state?.book?.processFeed(action.value.bids, action.value.asks),
+      };
+    default:
+      return state;
+  }
+};
