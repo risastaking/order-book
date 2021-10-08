@@ -3,7 +3,8 @@ import { Order } from "../types/order-book/OrderBook";
 import { combineReducers, FeedReducer, AppReducer } from "../reducers";
 import { AppState } from "../types/App";
 import { usePageVisibility } from "../hooks/usePageVisibility";
-import { Action, ActionType } from "../reducers/AppReducer";
+import { ActionType, Action } from "../reducers/FeedReducer";
+import { ProductId } from "../types/events";
 
 type OrderBookViewProps = {
   state: AppState;
@@ -17,7 +18,7 @@ export const OrderBookView = ({ state, dispatch }:OrderBookViewProps) => {
       <input
         type="button"
         value="Toggle Feed"
-        onClick={() => dispatch({ type: ActionType.TOGGLE_FEED })}
+        onClick={() => dispatch({ type: ActionType.TOGGLE, value: state.productId === ProductId.ETH_USD ? ProductId.BTC_USD : ProductId.ETH_USD })}
       />
       <h1>Order Book</h1>
       <h2>Asks</h2>

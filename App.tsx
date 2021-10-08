@@ -10,10 +10,10 @@ import { AppReducer, combineReducers, FeedReducer } from "./reducers";
 import { ActionType } from "./reducers/AppReducer";
 import { ActionType as FeedActionType , Action as FeedAction} from "./reducers/FeedReducer";
 import { AppState } from "./types/App";
-import { FeedEvent } from "./types/events";
+import { FeedEvent, ProductId } from "./types/events";
 
 const initialAppState = {
-  productId: "PI_XBTUSD",
+  productId: ProductId.BTC_USD,
   feed: "book_ui_1",
   socket: null,
   info: null,

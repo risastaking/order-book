@@ -4,13 +4,15 @@ import {
   SubscribedEvent,
   SnapshotEvent,
   DeltaEvent,
+  ProductId,
 } from "../types/events";
 import { OrderBook } from "../types/order-book/OrderBook";
 
 export enum ActionType {
   SUBSCRIBE = "subscribe",
-  INFO = "info",
   UNSUBSCRIBE = "unsubscribe",
+  TOGGLE = "toggle",
+  INFO = "info",
   SUBSCRIBED = "subscribed",
   SNAPSHOT = "book_ui_1_snapshot",
   DELTA = "book_ui_1",
@@ -19,6 +21,7 @@ export enum ActionType {
 export type Action =
   | { type: ActionType.SUBSCRIBE }
   | { type: ActionType.UNSUBSCRIBE }
+  | { type: ActionType.TOGGLE; value: ProductId }
   | { type: ActionType.INFO; value: InfoEvent }
   | { type: ActionType.SUBSCRIBED; value: SubscribedEvent }
   | { type: ActionType.SNAPSHOT; value: SnapshotEvent }
@@ -33,21 +36,37 @@ export const FeedReducer = (state: AppState, action: Action) => {
       };
     case ActionType.SUBSCRIBE:
       state.socket?.sendJson({
-          event: ActionType.SUBSCRIBE,
-          feed: state.feed,
-          product_ids: [state.productId]
-        });
-        return state
-      case ActionType.UNSUBSCRIBE:
-        state.socket?.sendJson({
-            event: ActionType.UNSUBSCRIBE,
-            feed: state.feed,
-            product_ids: [state.productId],
-          })
-          return {
-            ...state,
-            subscribed: false,
-          };
+        event: ActionType.SUBSCRIBE,
+        feed: state.feed,
+        product_ids: [state.productId],
+      });
+      return state;
+    case ActionType.UNSUBSCRIBE:
+      state.socket?.sendJson({
+        event: ActionType.UNSUBSCRIBE,
+        feed: state.feed,
+        product_ids: [state.productId],
+      });
+      return {
+        ...state,
+        subscribed: false,
+      };
+    case ActionType.TOGGLE:
+      state.socket?.sendJson({
+        event: ActionType.UNSUBSCRIBE,
+        feed: state.feed,
+        product_ids: [state.productId],
+      });
+      state.socket?.sendJson({
+        event: ActionType.SUBSCRIBE,
+        feed: state.feed,
+        product_ids: [action.value],
+      });
+      return {
+        ...state,
+        productId: action.value,
+        subscribed: false,
+      };
     case ActionType.SUBSCRIBED:
       return {
         ...state,
