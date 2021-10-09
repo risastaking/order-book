@@ -1,40 +1,40 @@
 import { OrderBook, OrderFeed } from './OrderBook'
 
-let asks: OrderFeed[] = [
+const asks: OrderFeed[] = [
     [30000, 200],
     [21000, 200],
 ]
-let bids: OrderFeed[] = [
+const bids: OrderFeed[] = [
     [20000, 150],
     [15000, 150],
 ]
 
 test('snapshot', () => {
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     expect(actual).toMatchSnapshot()
 })
 test('totals are sorted descending towards spread', () => {
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     actual.processFeed([[1, 100]], [[50000, 100]])
 
     expect(actual.bids.map((b) => b.total)).toStrictEqual([150, 300, 400])
     expect(actual.asks.map((b) => b.total)).toStrictEqual([500, 400, 200])
 })
 test('prices are sorted properly', () => {
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     actual.processFeed([[10000, 100]], [[50000, 100]])
 
     expect(actual.bids.map((b) => b.price)).toStrictEqual([20000, 15000, 10000])
     expect(actual.asks.map((b) => b.price)).toStrictEqual([50000, 30000, 21000])
 })
 test('spread', () => {
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     expect(actual.spread()).toBe(1000)
 })
 test('spread with empty orders', () => {
-    let emptyAsk = new OrderBook(bids, [])
-    let emptyBid = new OrderBook([], asks)
-    let emptyBook = new OrderBook([], [])
+    const emptyAsk = new OrderBook(bids, [])
+    const emptyBid = new OrderBook([], asks)
+    const emptyBook = new OrderBook([], [])
 
     expect(emptyAsk.spread()).toBe(0)
     expect(emptyBid.spread()).toBe(0)
@@ -42,33 +42,33 @@ test('spread with empty orders', () => {
     expect(emptyBook.spreadPercent()).toBe(0)
 })
 test('spread percent', () => {
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     actual.processFeed([[20502.5, 1000]], [])
     expect(actual.spreadPercent()).toBe(1.59)
 })
 test('apply deltas unordered', () => {
-    let asks: OrderFeed[] = [
+    const asks: OrderFeed[] = [
         [47274, 200],
         [47363.5, 200],
     ]
-    let bids: OrderFeed[] = [
+    const bids: OrderFeed[] = [
         [47258.5, 150],
         [47224.5, 150],
     ]
-    let askDeltas: OrderFeed[] = [
+    const askDeltas: OrderFeed[] = [
         [47274, 0],
         [47275, 10],
         [47362, 25],
         [47363.5, 700],
     ]
 
-    let bidDeltas: OrderFeed[] = [
+    const bidDeltas: OrderFeed[] = [
         [47225.5, 100],
         [47258.5, 0],
         [47268.5, 10],
         [47224.5, 100],
     ]
-    let actual = new OrderBook(bids, asks)
+    const actual = new OrderBook(bids, asks)
     actual.processFeed(bidDeltas, askDeltas)
 
     expect(actual.bids.reduce((acc, curr) => acc + curr.size, 0)).toBe(210)
@@ -90,7 +90,7 @@ test('empty deltas', () => {
 })
 
 test('levels deep 1', () => {
-    let book = new OrderBook(bids, asks)
+    const book = new OrderBook(bids, asks)
     book.levelsDeep = 1
 
     book.processFeed(
@@ -112,7 +112,7 @@ test('levels deep 1', () => {
     expect(book.asks.length).toBe(1)
 })
 test('levels deep 2', () => {
-    let book = new OrderBook(bids, asks)
+    const book = new OrderBook(bids, asks)
     book.levelsDeep = 2
 
     book.processFeed(
@@ -134,11 +134,11 @@ test('levels deep 2', () => {
     expect(book.asks.length).toBe(2)
 })
 test('highest quantity on ask', () => {
-    let book = new OrderBook(bids, asks)
+    const book = new OrderBook(bids, asks)
     expect(book.maxTotal()).toBe(400)
 })
 test('highest quantity on bid', () => {
-    let book = new OrderBook(bids, asks)
+    const book = new OrderBook(bids, asks)
     book.processFeed([[40000, 101]],[])
     expect(book.maxTotal()).toBe(401)
 })

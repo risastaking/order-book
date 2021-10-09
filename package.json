@@ -6,13 +6,13 @@
     "scripts": {
         "start": "parcel -p 5000 index.html",
         "build": "parcel build",
-        "test": "jest --watch"
+        "test": "jest --watch",
+        "lint": "eslint --fix ."
     },
     "keywords": [],
     "author": "markdreyer",
     "license": "ISC",
     "dependencies": {
-        "@types/react": "^17.0.25",
         "lodash": "^4.17.21",
         "node-sass": "^6.0.1",
         "react": "^17.0.2",
@@ -23,8 +23,13 @@
         "@parcel/transformer-sass": "^2.0.0-rc.0",
         "@types/jest": "^27.0.2",
         "@types/lodash": "^4.14.175",
+        "@types/react": "^17.0.25",
         "@types/react-dom": "^17.0.9",
         "@types/react-router-dom": "^5.3.0",
+        "@typescript-eslint/eslint-plugin": "^4.33.0",
+        "@typescript-eslint/parser": "^4.33.0",
+        "eslint": "^7.32.0",
+        "eslint-plugin-react": "^7.26.1",
         "jest": "^27.2.4",
         "parcel": "^2.0.0-rc.0",
         "ts-jest": "^27.0.5",

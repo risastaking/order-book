@@ -17,7 +17,7 @@ export interface Order {
 }
 
 export class OrderBook {
-    public levelsDeep = 25
+    public levelsDeep = 12
     public bids: Order[] = []
     public asks: Order[] = []
     private topAsk = () => last(this.asks)?.price || 0
@@ -61,17 +61,17 @@ export class OrderBook {
     private sumOrders = (side: OrderSide) => (orders: Order[]): Order[] =>
         side === OrderSide.BID
             ? orders.reduce((acc, order, i) => {
-                    acc[i].total =
+                acc[i].total =
                         i === 0 ? order.size : acc[i - 1].total + order.size
-                    return acc
-                }, orders)
+                return acc
+            }, orders)
             : orders.reduceRight((acc, order, i) => {
-                    acc[i].total =
+                acc[i].total =
                         i === acc.length - 1
                             ? order.size
                             : acc[i + 1].total + order.size
-                    return acc
-                }, orders)
+                return acc
+            }, orders)
 
     private filterEmptyOrders = (orders: Order[]): Order[] =>
         orders.filter((o) => o.size > 0)
@@ -84,14 +84,14 @@ export class OrderBook {
     private upsert = (side: OrderSide) => (newOrders: Order[]): Order[] =>
         newOrders.reduce(
             (acc: Order[], order: Order) => {
-                let updateIndex = _findIndex(acc,(o: Order) => o?.price === order.price)
+                const updateIndex = _findIndex(acc,(o: Order) => o?.price === order.price)
 
                 if (updateIndex !== -1) {
                     // Update
                     acc[updateIndex].size = order.size
                 } else {
                     // Insert (while maintaining sort order)
-                    let insertIndex = _sortedIndexBy(acc,order,(o: Order) => -o.price)
+                    const insertIndex = _sortedIndexBy(acc,order,(o: Order) => -o.price)
                     acc.splice(insertIndex, 0, order)
                 }
                 return acc

@@ -1,5 +1,5 @@
-import { ActionType } from '../../reducers/FeedReducer';
-import { Order, OrderFeed } from '../order-book/OrderBook'
+import { ActionType } from '../../reducers/FeedReducer'
+import { Order, OrderFeed } from '../../modules/order-book/OrderBook'
 
 export enum ProductId {
     BTC_USD = 'PI_XBTUSD',

@@ -1,6 +1,6 @@
-import React from "react";
-import { round } from "../formats";
-import { Order } from "../types/order-book/OrderBook";
+import React from 'react'
+import { round } from '../formats'
+import { Order } from '../modules/order-book/OrderBook'
 
 type OrderBookRowProps = {
   order: Order;
@@ -8,20 +8,20 @@ type OrderBookRowProps = {
 };
 
 export const OrderBookRow = ({ order, maxTotal }: OrderBookRowProps) => {
-  const percentWidth = round((order.total / maxTotal) * 100) + "%";
+    const percentWidth = round((order.total / maxTotal) * 100) + '%'
 
     return <svg width="100%" height="15">
         <rect x="0" y="0" width={percentWidth} height="100%" fill="#33b5e5" />
         <text x="10%" y="50%" dominantBaseline="middle" textAnchor="left">
-          {order.price}
+            {order.price}
         </text>
         <text x="40%" y="50%" dominantBaseline="middle" textAnchor="left">
-          {order.size}
+            {order.size}
         </text>
         <text x="70%" y="50%" dominantBaseline="middle" textAnchor="left">
-          {order.size}
+            {order.size}
         </text>
-      </svg>
+    </svg>
 
 //   return (
 //     <div
@@ -35,4 +35,4 @@ export const OrderBookRow = ({ order, maxTotal }: OrderBookRowProps) => {
 //       <span style={{ flexGrow: 1, maxWidth: "30%" }}>{order.total}</span>
 //     </div>
 //   );
-};
+}

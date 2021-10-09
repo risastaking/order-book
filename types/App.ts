@@ -1,6 +1,6 @@
 import { WebSocketHook } from '../hooks/useWebSocket'
-import { InfoEvent, ProductId, SubscribedEvent } from './events'
-import { OrderBook } from './order-book/OrderBook'
+import { InfoEvent, ProductId } from './events'
+import { OrderBook } from '../modules/order-book/OrderBook'
 
 export interface AppState {
         productId: ProductId
