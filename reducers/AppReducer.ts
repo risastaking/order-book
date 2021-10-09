@@ -1,8 +1,7 @@
 import React from 'react'
+import { AppAction } from '.'
 import { WebSocketHook } from '../hooks/useWebSocket'
 import { AppState } from '../types/App'
-import { FeedAction } from './FeedReducer'
-
 
 export enum ActionType {
   START = 'start',
@@ -13,7 +12,7 @@ export type Action =
   | { type: ActionType.START, value: WebSocketHook }
   | { type: ActionType.STOP, value: React.Dispatch<any> }
 
-export const AppReducer = (state: AppState, action: Action | FeedAction): AppState => {
+export const AppReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
     case ActionType.START:
         return {

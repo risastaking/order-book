@@ -9,7 +9,7 @@ import { useWebSocket } from './hooks/useWebSocket'
 import { AppReducer, combineReducers, FeedReducer } from './reducers'
 import { ActionType } from './reducers/AppReducer'
 import {
-    ActionType as FeedActionType,
+    FeedActionType as FeedActionType,
     FeedAction,
 } from './reducers/FeedReducer'
 import { AppState } from './types/App'

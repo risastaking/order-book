@@ -7,43 +7,27 @@ import {
     ProductId,
 } from '../types/events'
 import { OrderBook } from '../modules/order-book/OrderBook'
+import { AppAction } from '.';
 
-export enum ActionType {
-  SUBSCRIBE = 'subscribe',
-  UNSUBSCRIBE = 'unsubscribe',
-  TOGGLE = 'toggle',
-  INFO = 'info',
-  SUBSCRIBED = 'subscribed',
-  SNAPSHOT = 'book_ui_1_snapshot',
-  DELTA = 'book_ui_1',
-}
 
-export type FeedAction =
-  | { type: ActionType.SUBSCRIBE }
-  | { type: ActionType.UNSUBSCRIBE }
-  | { type: ActionType.TOGGLE; value: ProductId }
-  | { type: ActionType.INFO; value: InfoEvent }
-  | { type: ActionType.SUBSCRIBED; value: SubscribedEvent }
-  | { type: ActionType.SNAPSHOT; value: SnapshotEvent }
-  | { type: ActionType.DELTA; value: DeltaEvent };
 
-export const FeedReducer = (state: AppState, action: FeedAction): AppState => {
+export const FeedReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
-    case ActionType.INFO:
+    case FeedActionType.INFO:
         return {
             ...state,
             info: action.value,
         }
-    case ActionType.SUBSCRIBE:
+    case FeedActionType.SUBSCRIBE:
         state.socket?.sendJson({
-            event: ActionType.SUBSCRIBE,
+            event: FeedActionType.SUBSCRIBE,
             feed: state.feed,
             product_ids: [state.productId],
         })
         return state
-    case ActionType.UNSUBSCRIBE:
+    case FeedActionType.UNSUBSCRIBE:
         state.socket?.sendJson({
-            event: ActionType.UNSUBSCRIBE,
+            event: FeedActionType.UNSUBSCRIBE,
             feed: state.feed,
             product_ids: [state.productId],
         })
@@ -51,14 +35,14 @@ export const FeedReducer = (state: AppState, action: FeedAction): AppState => {
             ...state,
             subscribed: false,
         }
-    case ActionType.TOGGLE:
+    case FeedActionType.TOGGLE:
         state.socket?.sendJson({
-            event: ActionType.UNSUBSCRIBE,
+            event: FeedActionType.UNSUBSCRIBE,
             feed: state.feed,
             product_ids: [state.productId],
         })
         state.socket?.sendJson({
-            event: ActionType.SUBSCRIBE,
+            event: FeedActionType.SUBSCRIBE,
             feed: state.feed,
             product_ids: [action.value],
         })
@@ -67,17 +51,17 @@ export const FeedReducer = (state: AppState, action: FeedAction): AppState => {
             productId: action.value,
             subscribed: false,
         }
-    case ActionType.SUBSCRIBED:
+    case FeedActionType.SUBSCRIBED:
         return {
             ...state,
             subscribed: true,
         }
-    case ActionType.SNAPSHOT:
+    case FeedActionType.SNAPSHOT:
         return {
             ...state,
             book: new OrderBook(action.value.bids, action.value.asks),
         }
-    case ActionType.DELTA:
+    case FeedActionType.DELTA:
         return {
             ...state,
             book: state?.book?.processFeed(action.value.bids, action.value.asks),

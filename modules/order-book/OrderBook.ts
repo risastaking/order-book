@@ -4,17 +4,7 @@ import _findIndex from 'lodash/findIndex'
 import _sortedIndexBy from 'lodash/sortedIndexBy'
 import { flow, head, last } from 'lodash/fp'
 import { round } from '../../formats'
-
-export type OrderFeed = [number, number]
-export enum OrderSide {
-    BID = 'bid',
-    ASK = 'ask',
-}
-export interface Order {
-    price: number
-    size: number
-    total: number
-}
+import { Order, OrderFeed, OrderSide } from '../../types/OrderBook'
 
 export class OrderBook {
     public levelsDeep = 12

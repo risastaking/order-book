@@ -1,7 +1,7 @@
 import React from 'react'
 import { Order } from '../modules/order-book/OrderBook'
 import { AppState } from '../types/App'
-import { ActionType, FeedAction } from '../reducers/FeedReducer'
+import { FeedActionType, FeedAction } from '../reducers/FeedReducer'
 import { ProductId } from '../types/events'
 import { OrderBookRow } from './OrderBookRow'
 
@@ -13,7 +13,7 @@ type OrderBookViewProps = {
 export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
     const handleToggleFeed = () =>
         dispatch({
-            type: ActionType.TOGGLE,
+            type: FeedActionType.TOGGLE,
             value:
         state.productId === ProductId.ETH_USD
             ? ProductId.BTC_USD

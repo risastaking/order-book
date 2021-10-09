@@ -1,13 +1,6 @@
-import { ActionType } from '../../reducers/FeedReducer'
-import { Order, OrderFeed } from '../../modules/order-book/OrderBook'
-
-export enum ProductId {
-    BTC_USD = 'PI_XBTUSD',
-    ETH_USD = 'PI_ETHUSD',
-}
 
 export interface FeedEvent {
-    event: ActionType
+    event: FeedActionType
     feed: string
     product_ids: string[]
 }
@@ -29,7 +22,7 @@ export interface SnapshotEvent {
     productId: string
 }
 export interface SubscribedEvent {
-    event: ActionType
+    event: FeedActionType
     feed: string
     product_ids: string[]
 }
