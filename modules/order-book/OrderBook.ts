@@ -2,7 +2,7 @@
 // https://www.measurethat.net/Benchmarks/ShowResult/228038
 import _findIndex from 'lodash/findIndex'
 import _sortedIndexBy from 'lodash/sortedIndexBy'
-import { flow, head, last, some, isNull, all } from 'lodash/fp'
+import { flow, head, last } from 'lodash/fp'
 import { round } from '../../formats'
 
 export type OrderFeed = [number, number]
@@ -24,22 +24,22 @@ export class OrderBook {
     private topBid = () => head(this.bids)?.price || 0
     private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
 
-    readonly spread = () => this.hasSpread() ? round(this.topAsk() - this.topBid()) : 0
-    readonly midPoint = () => this.topAsk() + this.topBid() / 2
-    readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100) || 0
-    readonly maxTotal = () => Math.max(head(this.asks)?.total || 0, last(this.bids)?.total || 0)
+    readonly spread = (): number => this.hasSpread() ? round(this.topAsk() - this.topBid()) : 0
+    readonly midPoint = (): number => this.topAsk() + this.topBid() / 2
+    readonly spreadPercent = (): number => round((this.spread() / this.midPoint()) * 100) || 0
+    readonly maxTotal = (): number => Math.max(head(this.asks)?.total || 0, last(this.bids)?.total || 0)
 
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
     }
-    public processFeed = (bids: OrderFeed[], asks: OrderFeed[]) =>
+    public processFeed = (bids: OrderFeed[], asks: OrderFeed[]): OrderBook =>
         flow(
             this.processOrders(bids, OrderSide.BID),
             this.processOrders(asks, OrderSide.ASK),
             () => this
         )()
 
-    private processOrders = (feed: OrderFeed[], side: OrderSide)  => () =>
+    private processOrders = (feed: OrderFeed[], side: OrderSide) => () =>
         flow(
             this.mapOrders,
             this.upsert(side),
@@ -62,14 +62,14 @@ export class OrderBook {
         side === OrderSide.BID
             ? orders.reduce((acc, order, i) => {
                 acc[i].total =
-                        i === 0 ? order.size : acc[i - 1].total + order.size
+                    i === 0 ? order.size : acc[i - 1].total + order.size
                 return acc
             }, orders)
             : orders.reduceRight((acc, order, i) => {
                 acc[i].total =
-                        i === acc.length - 1
-                            ? order.size
-                            : acc[i + 1].total + order.size
+                    i === acc.length - 1
+                        ? order.size
+                        : acc[i + 1].total + order.size
                 return acc
             }, orders)
 
@@ -84,14 +84,14 @@ export class OrderBook {
     private upsert = (side: OrderSide) => (newOrders: Order[]): Order[] =>
         newOrders.reduce(
             (acc: Order[], order: Order) => {
-                const updateIndex = _findIndex(acc,(o: Order) => o?.price === order.price)
+                const updateIndex = _findIndex(acc, (o: Order) => o?.price === order.price)
 
                 if (updateIndex !== -1) {
                     // Update
                     acc[updateIndex].size = order.size
                 } else {
                     // Insert (while maintaining sort order)
-                    const insertIndex = _sortedIndexBy(acc,order,(o: Order) => -o.price)
+                    const insertIndex = _sortedIndexBy(acc, order, (o: Order) => -o.price)
                     acc.splice(insertIndex, 0, order)
                 }
                 return acc

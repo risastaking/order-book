@@ -10,7 +10,7 @@ import { AppReducer, combineReducers, FeedReducer } from './reducers'
 import { ActionType } from './reducers/AppReducer'
 import {
     ActionType as FeedActionType,
-    Action as FeedAction,
+    FeedAction,
 } from './reducers/FeedReducer'
 import { AppState } from './types/App'
 import { FeedEvent, ProductId } from './types/events'

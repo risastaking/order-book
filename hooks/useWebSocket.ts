@@ -17,7 +17,7 @@ export const useWebSocket = (
     { onMessage, onOpen, onClose, onError, reconnect = true }: WebSocketOptions
 ): WebSocketHook => {
     const [shouldReconnect, setShouldReconnect] = useState(reconnect)
-    const websocket = useRef<unknown>(null)
+    const websocket = useRef<any>(null)
 
     const initialize = useCallback(() => {
         const ws = new WebSocket(url)

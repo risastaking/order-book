@@ -1,4 +1,4 @@
-import { OrderBook, OrderFeed } from './OrderBook'
+import { OrderFeed, OrderBook } from './OrderBook'
 
 const asks: OrderFeed[] = [
     [30000, 200],

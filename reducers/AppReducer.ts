@@ -1,7 +1,7 @@
 import React from 'react'
 import { WebSocketHook } from '../hooks/useWebSocket'
 import { AppState } from '../types/App'
-import { Action as FeedAction } from './FeedReducer'
+import { FeedAction } from './FeedReducer'
 
 
 export enum ActionType {

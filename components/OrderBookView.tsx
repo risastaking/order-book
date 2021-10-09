@@ -1,13 +1,13 @@
 import React from 'react'
 import { Order } from '../modules/order-book/OrderBook'
 import { AppState } from '../types/App'
-import { ActionType, Action } from '../reducers/FeedReducer'
+import { ActionType, FeedAction } from '../reducers/FeedReducer'
 import { ProductId } from '../types/events'
 import { OrderBookRow } from './OrderBookRow'
 
 type OrderBookViewProps = {
   state: AppState;
-  dispatch: React.Dispatch<Action>;
+  dispatch: React.Dispatch<FeedAction>;
 };
 
 export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {

@@ -18,7 +18,7 @@ export enum ActionType {
   DELTA = 'book_ui_1',
 }
 
-export type Action =
+export type FeedAction =
   | { type: ActionType.SUBSCRIBE }
   | { type: ActionType.UNSUBSCRIBE }
   | { type: ActionType.TOGGLE; value: ProductId }
@@ -27,7 +27,7 @@ export type Action =
   | { type: ActionType.SNAPSHOT; value: SnapshotEvent }
   | { type: ActionType.DELTA; value: DeltaEvent };
 
-export const FeedReducer = (state: AppState, action: Action) => {
+export const FeedReducer = (state: AppState, action: FeedAction): AppState => {
     switch (action.type) {
     case ActionType.INFO:
         return {
