@@ -1,6 +1,4 @@
-import { AppState } from '../types/App'
-import { Action } from './AppReducer'
-import { FeedAction } from './FeedReducer'
+import { AppAction, AppState } from '../types/App'
 
 export const combineReducers =
     (...reducers: ((state: AppState, action: AppAction ) => AppState)[]) =>

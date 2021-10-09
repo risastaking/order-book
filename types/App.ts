@@ -1,15 +1,20 @@
 import { WebSocketHook } from '../hooks/useWebSocket'
-import { InfoEvent, ProductId } from './events'
 import { OrderBook } from '../modules/order-book/OrderBook'
-import { Action } from '../reducers/AppReducer'
-import { FeedAction } from '../reducers/FeedReducer'
+import { FeedAction } from './Feed'
+import { InfoEvent } from './FeedEvents'
 
+export enum ActionType {
+        START = 'start',
+        STOP = 'stop',
+        TOGGLE = 'TOGGLE'
+}
+export type Action =
+        | { type: ActionType.START, value: WebSocketHook }
+        | { type: ActionType.STOP, value: React.Dispatch<any> }
 export enum ProductId {
         BTC_USD = 'PI_XBTUSD',
         ETH_USD = 'PI_ETHUSD',
-    }
-
-
+}
 export type AppAction = Action | FeedAction
 export interface AppState {
         productId: ProductId

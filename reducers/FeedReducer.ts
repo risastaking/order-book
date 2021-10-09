@@ -1,15 +1,6 @@
-import { AppState } from '../types/App'
-import {
-    InfoEvent,
-    SubscribedEvent,
-    SnapshotEvent,
-    DeltaEvent,
-    ProductId,
-} from '../types/events'
+import { AppAction, AppState } from '../types/App'
 import { OrderBook } from '../modules/order-book/OrderBook'
-import { AppAction } from '.';
-
-
+import { FeedActionType } from '../types/Feed'
 
 export const FeedReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {

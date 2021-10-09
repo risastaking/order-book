@@ -1,3 +1,5 @@
+import { FeedActionType } from './Feed'
+import { OrderFeed } from './OrderBook'
 
 export interface FeedEvent {
     event: FeedActionType

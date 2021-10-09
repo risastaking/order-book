@@ -1,3 +1,6 @@
+import { ProductId } from './App'
+import { InfoEvent, SubscribedEvent, SnapshotEvent, DeltaEvent } from './FeedEvents'
+
 export enum FeedActionType {
     SUBSCRIBE = 'subscribe',
     UNSUBSCRIBE = 'unsubscribe',
@@ -6,9 +9,9 @@ export enum FeedActionType {
     SUBSCRIBED = 'subscribed',
     SNAPSHOT = 'book_ui_1_snapshot',
     DELTA = 'book_ui_1',
-  }
+}
 
-  export type FeedAction =
+export type FeedAction =
     | { type: FeedActionType.SUBSCRIBE }
     | { type: FeedActionType.UNSUBSCRIBE }
     | { type: FeedActionType.TOGGLE; value: ProductId }
