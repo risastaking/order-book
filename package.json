@@ -2,10 +2,9 @@
     "name": "order-book",
     "version": "1.0.0",
     "description": "",
-    "main": "index.js",
     "scripts": {
         "start": "parcel -p 5000 index.html",
-        "build": "parcel build",
+        "build": "parcel build index.html",
         "test": "jest --watch",
         "lint": "eslint --fix ."
     },
@@ -13,6 +12,7 @@
     "author": "markdreyer",
     "license": "ISC",
     "dependencies": {
+        "@swc/helpers": "^0.2.13",
         "lodash": "^4.17.21",
         "node-sass": "^6.0.1",
         "react": "^17.0.2",
@@ -20,7 +20,9 @@
         "react-router-dom": "^5.3.0"
     },
     "devDependencies": {
+        "@parcel/config-default": "^2.0.0-rc.0",
         "@parcel/transformer-sass": "^2.0.0-rc.0",
+        "@parcel/transformer-typescript-tsc": "^2.0.0-nightly.875",
         "@types/jest": "^27.0.2",
         "@types/lodash": "^4.14.175",
         "@types/react": "^17.0.25",
