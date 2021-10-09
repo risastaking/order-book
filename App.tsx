@@ -15,9 +15,6 @@ import { config } from './config'
 const initialAppState = {
     productId: ProductId.BTC_USD,
     feed: 'book_ui_1',
-    socket: null,
-    info: null,
-    subscribed: false,
     book: new OrderBook([], []),
 } as AppState
 

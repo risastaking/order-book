@@ -12,12 +12,14 @@ export const FeedReducer = (state: AppState, action: AppAction): AppState => {
     case FeedActionType.SUBSCRIBE:
         state.socket?.sendJson({
             event: FeedActionType.SUBSCRIBE,
+            feed: state.feed,
             product_ids: [state.productId],
         })
         return state
     case FeedActionType.UNSUBSCRIBE:
         state.socket?.sendJson({
             event: FeedActionType.UNSUBSCRIBE,
+            feed: state.feed,
             product_ids: [state.productId],
         })
         return {
@@ -27,10 +29,12 @@ export const FeedReducer = (state: AppState, action: AppAction): AppState => {
     case FeedActionType.TOGGLE:
         state.socket?.sendJson({
             event: FeedActionType.UNSUBSCRIBE,
+            feed: state.feed,
             product_ids: [state.productId],
         })
         state.socket?.sendJson({
             event: FeedActionType.SUBSCRIBE,
+            feed: state.feed,
             product_ids: [action.value],
         })
         return {

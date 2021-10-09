@@ -17,6 +17,18 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps): JSX.Elem
             ? ProductId.BTC_USD
             : ProductId.ETH_USD,
         })
+    const handleReconnect = () =>
+        dispatch({type: FeedActionType.SUBSCRIBE})
+
+    if(state.subscribed === false) {
+        return (
+            <div>
+                <button onClick={handleReconnect}>
+                Reconnect to {state.productId}
+                </button>
+            </div>
+        )
+    }
 
     return (<>
         {state.subscribed && <p>Subscribed to {state.productId} </p>}

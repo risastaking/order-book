@@ -23,9 +23,10 @@ export enum ProductId {
 }
 export type AppAction = Action | FeedAction
 export interface AppState {
+        feed: string
         productId: ProductId
         socket: WebSocketHook | null
         info: InfoEvent | null
-        subscribed: boolean
+        subscribed: boolean | null
         book: OrderBook
 }
