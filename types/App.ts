@@ -24,7 +24,6 @@ export enum ProductId {
 export type AppAction = Action | FeedAction
 export interface AppState {
         productId: ProductId
-        feed: string
         socket: WebSocketHook | null
         info: InfoEvent | null
         subscribed: boolean

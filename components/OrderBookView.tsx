@@ -1,15 +1,14 @@
 import React from 'react'
 import { AppState, ProductId } from '../types/App'
 import { FeedAction, FeedActionType } from '../types/Feed'
-import { Order } from '../types/OrderBook'
-import { OrderBookRow } from './OrderBookRow'
+import { OrderBookChart } from './OrderBookChart'
 
 type OrderBookViewProps = {
   state: AppState;
   dispatch: React.Dispatch<FeedAction>;
 };
 
-export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
+export const OrderBookView = ({ state, dispatch }: OrderBookViewProps): JSX.Element => {
     const handleToggleFeed = () =>
         dispatch({
             type: FeedActionType.TOGGLE,
@@ -20,32 +19,15 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
         })
 
     return (<>
-
         {state.subscribed && <p>Subscribed to {state.productId} </p>}
-        <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
         <h1>Order Book</h1>
-
-        <div style={{minHeight: '30vh'}}>
-            {state.book.asks.map((o: Order) => (
-                <OrderBookRow
-                    key={o.price}
-                    order={o}
-                    maxTotal={state.book.maxTotal()}
-                />
-            ))}
-        </div>
+        <OrderBookChart orders={state.book.asks} maxTotal={state.book.maxTotal()} />
         <p>
         Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
         </p>
-        <div style={{minHeight: '30vh'}}>
-            {state.book.bids.map((o: Order) => (
-                <OrderBookRow
-                    key={o.price}
-                    order={o}
-                    maxTotal={state.book.maxTotal()}
-                />
-            ))}
-        </div>
+        <OrderBookChart orders={state.book.bids} maxTotal={state.book.maxTotal()} />
+
+        <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
     </>
     )
 }
