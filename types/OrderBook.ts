@@ -7,4 +7,5 @@ export interface Order {
     price: number
     size: number
     total: number
+    percentOfBook: string
 }

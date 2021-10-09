@@ -31,15 +31,13 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps): JSX.Elem
     }
 
     return (<>
-        {state.subscribed && <p>Subscribed to {state.productId} </p>}
+        {state.subscribed && <p>{state.productId} <input type="button" value="Toggle Feed" onClick={handleToggleFeed} /></p>}
         <h1>Order Book</h1>
-        <OrderBookChart orders={state.book.asks} maxTotal={state.book.maxTotal()} />
+        <OrderBookChart orders={state.book.asks} />
         <p>
         Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
         </p>
-        <OrderBookChart orders={state.book.bids} maxTotal={state.book.maxTotal()} />
-
-        <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
+        <OrderBookChart orders={state.book.bids} />
     </>
     )
 }

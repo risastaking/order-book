@@ -136,10 +136,12 @@ test('levels deep 2', () => {
 })
 test('highest quantity on ask', () => {
     const book = new OrderBook(bids, asks)
-    expect(book.maxTotal()).toBe(400)
+    expect(book.maxQuantity).toBe(400)
+    expect(book.asks[0].percentOfBook).toBe('100%')
 })
 test('highest quantity on bid', () => {
     const book = new OrderBook(bids, asks)
-    book.processFeed([[40000, 101]],[])
-    expect(book.maxTotal()).toBe(401)
+    book.processFeed([[40000, 101]], [])
+    expect(book.maxQuantity).toBe(401)
+    expect(book.bids[2].percentOfBook).toBe('100%')
 })

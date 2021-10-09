@@ -14,21 +14,28 @@ export class OrderBook {
     private topAsk = () => last(this.asks)?.price || 0
     private topBid = () => head(this.bids)?.price || 0
     private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
+    public maxQuantity = 0
 
     readonly spread = (): number => this.hasSpread() ? round(this.topAsk() - this.topBid()) : 0
     readonly midPoint = (): number => this.topAsk() + this.topBid() / 2
     readonly spreadPercent = (): number => round((this.spread() / this.midPoint()) * 100) || 0
-    readonly maxTotal = (): number => Math.max(head(this.asks)?.total || 0, last(this.bids)?.total || 0)
 
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
     }
-    public processFeed = (bids: OrderFeed[], asks: OrderFeed[]): OrderBook =>
+    public processFeed = (bids: OrderFeed[], asks: OrderFeed[]): OrderBook => {
+        this.maxQuantity = 0
         flow(
             this.processOrders(bids, OrderSide.BID),
             this.processOrders(asks, OrderSide.ASK),
             () => this
         )()
+
+        this.bids = this.calculatePercentOfBook(this.bids)
+        this.asks = this.calculatePercentOfBook(this.asks)
+
+        return this
+    }
 
     private processOrders = (feed: OrderFeed[], side: OrderSide) => () =>
         flow(
@@ -47,13 +54,15 @@ export class OrderBook {
         price: feed[0],
         size: feed[1],
         total: 0,
+        percentOfBook: ''
     })
 
-    private sumOrders = (side: OrderSide) => (orders: Order[]): Order[] =>
-        side === OrderSide.BID
+    private sumOrders = (side: OrderSide) => (orders: Order[]): Order[] => {
+        return side === OrderSide.BID
             ? orders.reduce((acc, order, i) => {
                 acc[i].total =
                     i === 0 ? order.size : acc[i - 1].total + order.size
+                this.maxQuantity = Math.max(this.maxQuantity, acc[i].total)
                 return acc
             }, orders)
             : orders.reduceRight((acc, order, i) => {
@@ -61,8 +70,16 @@ export class OrderBook {
                     i === acc.length - 1
                         ? order.size
                         : acc[i + 1].total + order.size
+                this.maxQuantity = Math.max(this.maxQuantity, acc[i].total)
                 return acc
             }, orders)
+    }
+
+    private calculatePercentOfBook = (orders: Order[]) =>
+        orders.reduce((acc, order, i) => {
+            acc[i].percentOfBook = round(order.total / this.maxQuantity * 100) + '%'
+            return acc
+        }, orders)
 
     private filterEmptyOrders = (orders: Order[]): Order[] =>
         orders.filter((o) => o.size > 0)
