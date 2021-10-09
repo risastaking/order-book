@@ -7,14 +7,10 @@ import './css/app.scss'
 import { usePageVisibility } from './hooks/usePageVisibility'
 import { useWebSocket } from './hooks/useWebSocket'
 import { AppReducer, combineReducers, FeedReducer } from './reducers'
-import { ActionType } from './reducers/AppReducer'
-import {
-    FeedActionType as FeedActionType,
-    FeedAction,
-} from './reducers/FeedReducer'
-import { AppState } from './types/App'
-import { FeedEvent, ProductId } from './types/events'
+import { ActionType, AppState, ProductId } from './types/App'
 import { OrderBook } from './modules/order-book/OrderBook'
+import { FeedActionType, FeedAction } from './types/Feed'
+import { FeedEvent } from './types/FeedEvents'
 
 const initialAppState = {
     productId: ProductId.BTC_USD,

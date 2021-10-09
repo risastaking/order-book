@@ -1,8 +1,7 @@
 import React from 'react'
-import { Order } from '../modules/order-book/OrderBook'
-import { AppState } from '../types/App'
-import { FeedActionType, FeedAction } from '../reducers/FeedReducer'
-import { ProductId } from '../types/events'
+import { AppState, ProductId } from '../types/App'
+import { FeedAction, FeedActionType } from '../types/Feed'
+import { Order } from '../types/OrderBook'
 import { OrderBookRow } from './OrderBookRow'
 
 type OrderBookViewProps = {
@@ -20,8 +19,8 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
             : ProductId.ETH_USD,
         })
 
-    return (
-        <div>
+    return (<>
+        <div style={{minHeight: '40vh'}}>
             {state.subscribed && <p>Subscribed to {state.productId} </p>}
             <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
             <h1>Order Book</h1>
@@ -32,9 +31,11 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
                     maxTotal={state.book.maxTotal()}
                 />
             ))}
-            <p>
+        </div>
+        <p>
         Spread: {state.book?.spread()} ({state.book?.spreadPercent()} %)
-            </p>
+        </p>
+        <div style={{minHeight: '40vh'}}>
             {state.book?.bids.map((o: Order) => (
                 <OrderBookRow
                     key={o.price}
@@ -43,5 +44,6 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
                 />
             ))}
         </div>
+    </>
     )
 }

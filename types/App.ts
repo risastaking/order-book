@@ -6,11 +6,12 @@ import { InfoEvent } from './FeedEvents'
 export enum ActionType {
         START = 'start',
         STOP = 'stop',
-        TOGGLE = 'TOGGLE'
+        TOGGLE = 'toggle'
 }
 export type Action =
         | { type: ActionType.START, value: WebSocketHook }
         | { type: ActionType.STOP, value: React.Dispatch<any> }
+
 export enum ProductId {
         BTC_USD = 'PI_XBTUSD',
         ETH_USD = 'PI_ETHUSD',
