@@ -8,9 +8,13 @@ import { usePageVisibility } from "./hooks/usePageVisibility";
 import { useWebSocket } from "./hooks/useWebSocket";
 import { AppReducer, combineReducers, FeedReducer } from "./reducers";
 import { ActionType } from "./reducers/AppReducer";
-import { ActionType as FeedActionType , Action as FeedAction} from "./reducers/FeedReducer";
+import {
+  ActionType as FeedActionType,
+  Action as FeedAction,
+} from "./reducers/FeedReducer";
 import { AppState } from "./types/App";
 import { FeedEvent, ProductId } from "./types/events";
+import { OrderBook } from "./types/order-book/OrderBook";
 
 const initialAppState = {
   productId: ProductId.BTC_USD,
@@ -18,7 +22,7 @@ const initialAppState = {
   socket: null,
   info: null,
   subscribed: false,
-  book: null,
+  book: new OrderBook([], []),
 } as AppState;
 
 const App = () => {
@@ -37,11 +41,11 @@ const App = () => {
 
   useEffect(() => {
     if (isVisible) {
-      dispatch({ type: ActionType.START, value: socket })
+      dispatch({ type: ActionType.START, value: socket });
     } else {
-      dispatch({ type: FeedActionType.UNSUBSCRIBE })
+      dispatch({ type: FeedActionType.UNSUBSCRIBE });
     }
-    return () => dispatch({ type: FeedActionType.UNSUBSCRIBE })
+    return () => dispatch({ type: FeedActionType.UNSUBSCRIBE });
   }, [isVisible]);
 
   return (

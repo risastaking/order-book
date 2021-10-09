@@ -8,5 +8,5 @@ export interface AppState {
         socket: WebSocketHook | null
         info: InfoEvent | null
         subscribed: boolean
-        book: OrderBook | null
+        book: OrderBook
 }

@@ -133,3 +133,12 @@ test('levels deep 2', () => {
     expect(book.bids.length).toBe(2)
     expect(book.asks.length).toBe(2)
 })
+test('highest quantity on ask', () => {
+    let book = new OrderBook(bids, asks)
+    expect(book.maxTotal()).toBe(400)
+})
+test('highest quantity on bid', () => {
+    let book = new OrderBook(bids, asks)
+    book.processFeed([[40000, 101]],[])
+    expect(book.maxTotal()).toBe(401)
+})

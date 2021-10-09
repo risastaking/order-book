@@ -1,9 +1,7 @@
 import React from "react";
-import { useWebSocket, WebSocketHook } from "../hooks/useWebSocket";
+import { WebSocketHook } from "../hooks/useWebSocket";
 import { AppState } from "../types/App";
-import { FeedEvent } from "../types/events";
-import { OrderBook } from "../types/order-book/OrderBook";
-import { ActionType as FeedActionType, Action as FeedAction } from "./FeedReducer";
+import { Action as FeedAction } from "./FeedReducer";
 
 
 export enum ActionType {

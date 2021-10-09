@@ -19,13 +19,15 @@ export interface Order {
 export class OrderBook {
     public levelsDeep = 25
     public bids: Order[] = []
-    public asks: Order[] = [{price: 0, size: 0, total: 0}]
-    private lowestAsk = () => last(this.asks)?.price || 0
-    private highestBid = () => head(this.bids)?.price || 0
+    public asks: Order[] = []
+    private topAsk = () => last(this.asks)?.price || 0
+    private topBid = () => head(this.bids)?.price || 0
     private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
-    readonly spread = () => this.hasSpread() ? this.lowestAsk() - this.highestBid() : 0
-    readonly midPoint = () => this.lowestAsk() + this.highestBid() / 2
+
+    readonly spread = () => this.hasSpread() ? round(this.topAsk() - this.topBid()) : 0
+    readonly midPoint = () => this.topAsk() + this.topBid() / 2
     readonly spreadPercent = () => round((this.spread() / this.midPoint()) * 100) || 0
+    readonly maxTotal = () => Math.max(head(this.asks)?.total || 0, last(this.bids)?.total || 0)
 
     constructor(bids: OrderFeed[], asks: OrderFeed[]) {
         this.processFeed(bids, asks)
