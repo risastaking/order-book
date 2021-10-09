@@ -3,6 +3,11 @@ import { OrderBook } from '../modules/order-book/OrderBook'
 import { FeedAction } from './Feed'
 import { InfoEvent } from './FeedEvents'
 
+export interface AppConfig {
+        feedURL: string
+        levelsDeep: number
+}
+
 export enum ActionType {
         START = 'start',
         STOP = 'stop',

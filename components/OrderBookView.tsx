@@ -20,11 +20,13 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
         })
 
     return (<>
-        <div style={{minHeight: '40vh'}}>
-            {state.subscribed && <p>Subscribed to {state.productId} </p>}
-            <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
-            <h1>Order Book</h1>
-            {state.book?.asks.map((o: Order) => (
+
+        {state.subscribed && <p>Subscribed to {state.productId} </p>}
+        <input type="button" value="Toggle Feed" onClick={handleToggleFeed} />
+        <h1>Order Book</h1>
+
+        <div style={{minHeight: '30vh'}}>
+            {state.book.asks.map((o: Order) => (
                 <OrderBookRow
                     key={o.price}
                     order={o}
@@ -33,10 +35,10 @@ export const OrderBookView = ({ state, dispatch }: OrderBookViewProps) => {
             ))}
         </div>
         <p>
-        Spread: {state.book?.spread()} ({state.book?.spreadPercent()} %)
+        Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
         </p>
-        <div style={{minHeight: '40vh'}}>
-            {state.book?.bids.map((o: Order) => (
+        <div style={{minHeight: '30vh'}}>
+            {state.book.bids.map((o: Order) => (
                 <OrderBookRow
                     key={o.price}
                     order={o}

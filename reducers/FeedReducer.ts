@@ -55,7 +55,7 @@ export const FeedReducer = (state: AppState, action: AppAction): AppState => {
     case FeedActionType.DELTA:
         return {
             ...state,
-            book: state?.book?.processFeed(action.value.bids, action.value.asks),
+            book: state.book.processFeed(action.value.bids, action.value.asks),
         }
     default:
         return state

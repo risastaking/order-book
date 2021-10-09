@@ -11,6 +11,7 @@ import { ActionType, AppState, ProductId } from './types/App'
 import { OrderBook } from './modules/order-book/OrderBook'
 import { FeedActionType, FeedAction } from './types/Feed'
 import { FeedEvent } from './types/FeedEvents'
+import { config } from './config'
 
 const initialAppState = {
     productId: ProductId.BTC_USD,
@@ -25,7 +26,7 @@ const App = () => {
     const combinedReducer = combineReducers(AppReducer, FeedReducer)
     const [state, dispatch] = useReducer(combinedReducer, initialAppState)
     const isVisible = usePageVisibility()
-    const socket = useWebSocket('wss://www.cryptofacilities.com/ws/v1', {
+    const socket = useWebSocket(config.feedURL, {
         onOpen: () => dispatch({ type: FeedActionType.SUBSCRIBE }),
         onMessage: (message: MessageEvent) => {
             const event = JSON.parse(message.data) as FeedEvent
@@ -46,22 +47,11 @@ const App = () => {
 
     return (
         <Router>
-            <div>
-                <div>
-                    <Link to={'/'}>Home</Link>
-                    <Link to={'/apitest'}>API Test</Link>
-                </div>
-                <div>
-                    <Switch>
-                        <Route exact={true} path="/">
-                            <div>Hello from generator2</div>
-                        </Route>
-                        <Route exact={true} path="/apitest">
-                            <OrderBookView state={state} dispatch={dispatch} />
-                        </Route>
-                    </Switch>
-                </div>
-            </div>
+            <Switch>
+                <Route exact={true} path="/">
+                    <OrderBookView state={state} dispatch={dispatch} />
+                </Route>
+            </Switch>
         </Router>
     )
 }

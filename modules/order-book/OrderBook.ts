@@ -5,9 +5,10 @@ import _sortedIndexBy from 'lodash/sortedIndexBy'
 import { flow, head, last } from 'lodash/fp'
 import { round } from '../../formats'
 import { Order, OrderFeed, OrderSide } from '../../types/OrderBook'
+import { config } from '../../config'
 
 export class OrderBook {
-    public levelsDeep = 12
+    public levelsDeep: number = config.levelsDeep
     public bids: Order[] = []
     public asks: Order[] = []
     private topAsk = () => last(this.asks)?.price || 0
