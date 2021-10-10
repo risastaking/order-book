@@ -2,56 +2,43 @@
     font-family: sans-serif, Arial, Helvetica;
 }
 
-@media (min-width: 730px) {
-    .order-book-chart {
-        transform: rotate(90deg) scaleX(-1)
+.order-book-chart {
+    text-align: right;
+    font-size: 0.75rem;
+    height: 40vh;
+    color: whitesmoke;
+    --gradient-direction: to right;
+
+    header {
+        display: flex;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        span {
+            flex-grow: 1;
+            text-transform: uppercase;
+            padding: 0.5rem 1rem;
+            max-width: 30%;
+        }
     }
-    svg {
-
-            rect {
-
+    article {
+        display: flex;
+        flex-direction: column;
+        div {
+            display: flex;
+            span {
+                flex-grow: 1;
+                font-family: "Courier New", Courier, monospace;
+                max-width: 30%;
             }
-
+        }
     }
 }
-
-svg {
-    display: inherit;
-    width: 100%;
-    height: 15px;
-    rect {
-        height: 100%;
-    }
-    text {
-        fill: #000;
-        dominant-baseline: text-before-edge;
-        text-anchor: start;
-    }
-    text {
-        fill: whitesmoke;
-    }
-    text:nth-child(2) {
-        font-weight: 700;
-    }
-    text:nth-child(3) {
-        fill: whitesmoke;
-    }
-
-    &.bid {
-        text:nth-child(2) {
-            fill: rgba(107, 179, 114, 1);
-        }
-        rect {
-            fill: rgba(62, 121, 68, 1);
-        }
-    }
-
-    &.ask {
-        text:nth-child(2) {
-            fill: rgba(233, 109, 129, 1);
-        }
-        rect {
-            fill: rgba(209, 31, 61, 1);
+@media (min-width: 730px) {
+    .ask {
+        .order-book-chart {
+            --gradient-direction: to left;
+            article {
+                flex-direction: column-reverse;
+            }
         }
     }
 }

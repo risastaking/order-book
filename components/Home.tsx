@@ -22,7 +22,8 @@ export const Home = ({ state, dispatch }: HomeProps) => {
 
     return <section className="section has-text-centered">
         <ReconnectModal subscribed={state.subscribed}  productId={state.productId} handleReconnect={handleReconnect} />
-        <OrderBookView state={state} dispatch={dispatch} />
+        <h2>Order Book -  {state.subscribed && <>{state.productId}</>}</h2>
+        <OrderBookView state={state} />
         <input type="button" className="button is-primary" value="Toggle Feed" onClick={handleToggleFeed} />
     </section>
 

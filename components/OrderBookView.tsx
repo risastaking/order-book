@@ -11,14 +11,21 @@ export const OrderBookView = ({ state }: OrderBookViewProps): JSX.Element => {
 
     return (<>
 
-        <h2 className="title is-size-4 has-text-white">Order Book -  {state.subscribed && <>{state.productId}</>}</h2>
         <div className="columns">
-            <div className="column is-half">
-                <OrderBookChart orders={state.book.asks} side="ask" />
+            <div className="column is-half ask">
+                <OrderBookChart orders={state.book.asks}
+                    side="ask"
+                />
             </div>
-            <p className="has-text-white">Spread: {state.book.spread()} ({state.book.spreadPercent()} %)</p>
-            <div className="column is-half">
-                <OrderBookChart orders={state.book.bids} side="bid" />
+            <div className="columns">
+                <div className="column has-text-white">
+                    Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
+                </div>
+            </div>
+            <div className="column is-half bid">
+                <OrderBookChart orders={state.book.bids}
+                    side="bid"
+                />
             </div>
         </div>
     </>

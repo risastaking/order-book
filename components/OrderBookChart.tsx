@@ -1,18 +1,26 @@
 import React from 'react'
 import { Order } from '../types/OrderBook'
-import { OrderBookRow } from './OrderBookRow'
+import { OrderBookCell as OrderBookCell } from './OrderBookCell'
 
 type OrderBookChartProps = {
     orders: Order[];
     side: 'bid' | 'ask';
   };
 export const OrderBookChart = ({ orders, side}: OrderBookChartProps): JSX.Element =>
-    <div className="order-book-chart" style={{minHeight: '20vh', minWidth: '320px'}}>
-        {orders.map((o: Order) => (
-            <OrderBookRow
-                key={o.price}
-                order={o}
-                side={side}
-            />
-        ))}
-    </div>
+    <section className="order-book-chart">
+        <header>
+            <span>Price</span>
+            <span>Size</span>
+            <span>Total</span>
+        </header>
+        <article>
+            {orders.map((o: Order) => (
+                <OrderBookCell
+                    key={o.price}
+                    order={o}
+                    side={side}
+                />
+            ))}
+        </article>
+    </section>
+
