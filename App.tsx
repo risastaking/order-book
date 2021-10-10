@@ -1,8 +1,6 @@
 import React, { useReducer, useEffect } from 'react'
 import ReactDOM from 'react-dom'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
-import { OrderBookView } from './components/OrderBookView'
-import './css/app.scss'
 import { usePageVisibility } from './hooks/usePageVisibility'
 import { useWebSocket } from './hooks/useWebSocket'
 import { AppReducer, combineReducers, FeedReducer } from './reducers'
@@ -11,6 +9,9 @@ import { OrderBook } from './modules/order-book/OrderBook'
 import { FeedActionType, FeedAction } from './types/Feed'
 import { FeedEvent } from './types/FeedEvents'
 import { config } from './config'
+import { Home } from './components/Home'
+import 'bulma/css/bulma.css'
+import './css/app.scss'
 
 const initialAppState = {
     productId: ProductId.BTC_USD,
@@ -45,7 +46,7 @@ const App = () => {
         <Router>
             <Switch>
                 <Route exact={true} path="/">
-                    <OrderBookView state={state} dispatch={dispatch} />
+                    <Home state={state} dispatch={dispatch} />
                 </Route>
             </Switch>
         </Router>

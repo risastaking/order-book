@@ -1,13 +1,26 @@
 * {
     font-family: sans-serif, Arial, Helvetica;
 }
+
+@media (min-width: 730px) {
+    .order-book-chart {
+        transform: rotate(90deg) scaleX(-1)
+    }
+    svg {
+
+            rect {
+
+            }
+
+    }
+}
+
 svg {
     display: inherit;
     width: 100%;
     height: 15px;
     rect {
         height: 100%;
-        fill: #33b5e5;
     }
     text {
         fill: #000;
@@ -15,13 +28,30 @@ svg {
         text-anchor: start;
     }
     text {
-        fill: red;
+        fill: whitesmoke;
     }
     text:nth-child(2) {
-        fill: blue;
+        font-weight: 700;
     }
     text:nth-child(3) {
-        fill: green;
+        fill: whitesmoke;
+    }
+
+    &.bid {
+        text:nth-child(2) {
+            fill: rgba(107, 179, 114, 1);
+        }
+        rect {
+            fill: rgba(62, 121, 68, 1);
+        }
+    }
+
+    &.ask {
+        text:nth-child(2) {
+            fill: rgba(233, 109, 129, 1);
+        }
+        rect {
+            fill: rgba(209, 31, 61, 1);
+        }
     }
 }
-

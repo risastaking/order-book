@@ -4,13 +4,14 @@ import { Order } from '../types/OrderBook'
 
 type OrderBookRowProps = {
   order: Order;
+  side: 'bid' | 'ask';
 };
 
-export const OrderBookRow = ({ order }: OrderBookRowProps) : JSX.Element => {
+export const OrderBookRow = ({ order, side}: OrderBookRowProps) : JSX.Element => {
 
-    return <svg>
+    return <svg className={side}>
         <rect width={order.percentOfBook} />
-        <text x="10%">
+        <text x="10%" >
             {asPrice(order.price)}
         </text>
         <text x="40%">
@@ -20,5 +21,4 @@ export const OrderBookRow = ({ order }: OrderBookRowProps) : JSX.Element => {
             {asNumber(order.total)}
         </text>
     </svg>
-
 }

@@ -13,6 +13,7 @@
     "license": "ISC",
     "dependencies": {
         "@swc/helpers": "^0.2.13",
+        "bulma": "^0.9.3",
         "lodash": "^4.17.21",
         "node-sass": "^6.0.1",
         "react": "^17.0.2",

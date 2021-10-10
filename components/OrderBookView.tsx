@@ -5,39 +5,22 @@ import { OrderBookChart } from './OrderBookChart'
 
 type OrderBookViewProps = {
   state: AppState;
-  dispatch: React.Dispatch<FeedAction>;
 };
 
-export const OrderBookView = ({ state, dispatch }: OrderBookViewProps): JSX.Element => {
-    const handleToggleFeed = () =>
-        dispatch({
-            type: FeedActionType.TOGGLE,
-            value:
-        state.productId === ProductId.ETH_USD
-            ? ProductId.BTC_USD
-            : ProductId.ETH_USD,
-        })
-    const handleReconnect = () =>
-        dispatch({type: FeedActionType.SUBSCRIBE})
-
-    if(state.subscribed === false) {
-        return (
-            <div>
-                <button onClick={handleReconnect}>
-                Reconnect to {state.productId}
-                </button>
-            </div>
-        )
-    }
+export const OrderBookView = ({ state }: OrderBookViewProps): JSX.Element => {
 
     return (<>
-        {state.subscribed && <p>{state.productId} <input type="button" value="Toggle Feed" onClick={handleToggleFeed} /></p>}
-        <h1>Order Book</h1>
-        <OrderBookChart orders={state.book.asks} />
-        <p>
-        Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
-        </p>
-        <OrderBookChart orders={state.book.bids} />
+
+        <h2 className="title is-size-4 has-text-white">Order Book -  {state.subscribed && <>{state.productId}</>}</h2>
+        <div className="columns">
+            <div className="column is-half">
+                <OrderBookChart orders={state.book.asks} side="ask" />
+            </div>
+            <p className="has-text-white">Spread: {state.book.spread()} ({state.book.spreadPercent()} %)</p>
+            <div className="column is-half">
+                <OrderBookChart orders={state.book.bids} side="bid" />
+            </div>
+        </div>
     </>
     )
 }

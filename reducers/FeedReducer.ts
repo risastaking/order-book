@@ -40,7 +40,7 @@ export const FeedReducer = (state: AppState, action: AppAction): AppState => {
         return {
             ...state,
             productId: action.value,
-            subscribed: false,
+            subscribed: null,
         }
     case FeedActionType.SUBSCRIBED:
         return {
