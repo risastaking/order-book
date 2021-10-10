@@ -32,12 +32,21 @@
         }
     }
 }
-@media (min-width: 730px) {
+@media (min-width: 750px) {
+    .order-book-chart {
+        flex-direction: column-reverse;
+    }
     .ask {
         .order-book-chart {
             --gradient-direction: to left;
             article {
-                flex-direction: column-reverse;
+                    flex-direction: column-reverse;
+                    div {
+                        flex-direction: row-reverse;
+                    }
+            }
+            header {
+                flex-direction: row-reverse;
             }
         }
     }
