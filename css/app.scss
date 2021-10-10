@@ -1,7 +1,18 @@
 * {
     font-family: sans-serif, Arial, Helvetica;
 }
-
+#home {
+    color: whitesmoke;
+    p {
+        text-align: center;
+    }
+}
+.bid {
+    --gradient-color: rgba(62, 121, 68, 1);
+}
+.ask {
+    --gradient-color: rgba(209, 31, 61, 1);
+}
 .order-book-chart {
     text-align: right;
     font-size: 0.75rem;
@@ -16,7 +27,7 @@
             flex-grow: 1;
             text-transform: uppercase;
             padding: 0.5rem 1rem;
-            max-width: 30%;
+            max-width: 20%;
         }
     }
     article {
@@ -26,13 +37,13 @@
             display: flex;
             span {
                 flex-grow: 1;
-                font-family: "Courier New", Courier, monospace;
-                max-width: 30%;
+                font-family: monospace;
+                max-width: 20%;
             }
         }
     }
 }
-@media (min-width: 750px) {
+@media (min-width: 770px) {
     .order-book-chart {
         flex-direction: column-reverse;
     }
@@ -40,10 +51,10 @@
         .order-book-chart {
             --gradient-direction: to left;
             article {
-                    flex-direction: column-reverse;
-                    div {
-                        flex-direction: row-reverse;
-                    }
+                flex-direction: column-reverse;
+                div {
+                    flex-direction: row-reverse;
+                }
             }
             header {
                 flex-direction: row-reverse;

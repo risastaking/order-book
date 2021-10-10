@@ -6,9 +6,10 @@ type OrderBookChartProps = {
     orders: Order[];
     side: 'bid' | 'ask';
   };
-export const OrderBookChart = ({ orders, side}: OrderBookChartProps): JSX.Element =>
+export const OrderBookChart = ({ orders}: OrderBookChartProps): JSX.Element =>
     <section className="order-book-chart">
         <header>
+            <span></span>
             <span>Price</span>
             <span>Size</span>
             <span>Total</span>
@@ -18,7 +19,6 @@ export const OrderBookChart = ({ orders, side}: OrderBookChartProps): JSX.Elemen
                 <OrderBookCell
                     key={o.price}
                     order={o}
-                    side={side}
                 />
             ))}
         </article>

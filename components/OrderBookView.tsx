@@ -1,33 +1,25 @@
 import React from 'react'
-import { AppState, ProductId } from '../types/App'
-import { FeedAction, FeedActionType } from '../types/Feed'
+import { AppState } from '../types/App'
 import { OrderBookChart } from './OrderBookChart'
 
 type OrderBookViewProps = {
   state: AppState;
 };
 
-export const OrderBookView = ({ state }: OrderBookViewProps): JSX.Element => {
-
-    return (<>
-
-        <div className="columns">
-            <div className="column is-half ask">
-                <OrderBookChart orders={state.book.asks}
-                    side="ask"
-                />
-            </div>
-            <div className="columns">
-                <div className="column has-text-white">
-                    Spread: {state.book.spread()} ({state.book.spreadPercent()} %)
-                </div>
-            </div>
-            <div className="column is-half bid">
-                <OrderBookChart orders={state.book.bids}
-                    side="bid"
-                />
-            </div>
+export const OrderBookView = ({ state }: OrderBookViewProps): JSX.Element =>
+    <div className="columns is-gapless">
+        <div className="column is-6 ask">
+            <OrderBookChart orders={state.book.asks}
+                side="ask"
+            />
         </div>
-    </>
-    )
-}
+        <div className="column has-text-white is-hidden-tablet">
+            <p>Spread: {state.book.spread()} ({state.book.spreadPercent()} %)</p>
+        </div>
+        <div className="column is-6 bid">
+            <OrderBookChart orders={state.book.bids}
+                side="bid"
+            />
+        </div>
+    </div>
+

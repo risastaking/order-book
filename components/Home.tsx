@@ -20,11 +20,12 @@ export const Home = ({ state, dispatch }: HomeProps) => {
         })
     const handleReconnect = () => dispatch({type: FeedActionType.SUBSCRIBE})
 
-    return <section className="section has-text-centered">
+    return <div id="home">
         <ReconnectModal subscribed={state.subscribed}  productId={state.productId} handleReconnect={handleReconnect} />
         <h2>Order Book -  {state.subscribed && <>{state.productId}</>}</h2>
+        <p className="is-hidden-mobile">Spread: {state.book.spread()} ({state.book.spreadPercent()} %)</p>
         <OrderBookView state={state} />
-        <input type="button" className="button is-primary" value="Toggle Feed" onClick={handleToggleFeed} />
-    </section>
+        <p><input type="button" className="button is-primary" value="Toggle Feed" onClick={handleToggleFeed} /></p>
+    </div>
 
 }
