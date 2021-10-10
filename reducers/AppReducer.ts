@@ -1,8 +1,8 @@
-import { ActionType, AppAction, AppState } from '../types/App'
+import { AppActionType, AppAction, AppState } from '../types/App'
 
 export const AppReducer = (state: AppState, action: AppAction): AppState => {
     switch (action.type) {
-    case ActionType.START:
+    case AppActionType.START:
         return {
             ...state,
             socket: action.value,

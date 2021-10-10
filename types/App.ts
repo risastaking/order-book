@@ -1,6 +1,6 @@
 import { WebSocketHook } from '../hooks/useWebSocket'
 import { OrderBook } from '../modules/order-book/OrderBook'
-import { FeedAction } from './Feed'
+import { FeedAction, FeedActionType } from './Feed'
 import { InfoEvent } from './FeedEvents'
 
 export interface AppConfig {
@@ -8,14 +8,14 @@ export interface AppConfig {
         levelsDeep: number
 }
 
-export enum ActionType {
+export enum AppActionType {
         START = 'start',
         STOP = 'stop',
         TOGGLE = 'toggle'
 }
 export type Action =
-        | { type: ActionType.START, value: WebSocketHook }
-        | { type: ActionType.STOP, value: React.Dispatch<any> }
+        | { type: AppActionType.START, value: WebSocketHook }
+        | { type: AppActionType.STOP, value: React.Dispatch<any> }
 
 export enum ProductId {
         BTC_USD = 'PI_XBTUSD',
@@ -23,7 +23,7 @@ export enum ProductId {
 }
 export type AppAction = Action | FeedAction
 export interface AppState {
-        feed: string
+        feed: FeedActionType
         productId: ProductId
         socket: WebSocketHook | null
         info: InfoEvent | null

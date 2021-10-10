@@ -1,10 +1,10 @@
 import React from 'react'
 import { Order } from '../types/OrderBook'
 import { OrderBookCell as OrderBookCell } from './OrderBookCell'
+import './OrderBookChart.scss'
 
 type OrderBookChartProps = {
     orders: Order[];
-    side: 'bid' | 'ask';
   };
 export const OrderBookChart = ({ orders}: OrderBookChartProps): JSX.Element =>
     <section className="order-book-chart">

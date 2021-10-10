@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { usePageVisibility } from './hooks/usePageVisibility'
 import { useWebSocket } from './hooks/useWebSocket'
 import { AppReducer, combineReducers, FeedReducer } from './reducers'
-import { ActionType, AppState, ProductId } from './types/App'
+import { AppActionType, AppState, ProductId } from './types/App'
 import { OrderBook } from './modules/order-book/OrderBook'
 import { FeedActionType, FeedAction } from './types/Feed'
 import { FeedEvent } from './types/FeedEvents'
@@ -15,7 +15,7 @@ import './css/app.scss'
 
 const initialAppState = {
     productId: ProductId.BTC_USD,
-    feed: 'book_ui_1',
+    feed: FeedActionType.DELTA,
     book: new OrderBook([], []),
 } as AppState
 
@@ -35,7 +35,7 @@ const App = () => {
 
     useEffect(() => {
         if (isVisible) {
-            dispatch({ type: ActionType.START, value: socket })
+            dispatch({ type: AppActionType.START, value: socket })
         } else {
             dispatch({ type: FeedActionType.UNSUBSCRIBE })
         }
