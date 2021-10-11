@@ -27,7 +27,9 @@ const App = () => {
         onOpen: () => dispatch({ type: FeedActionType.SUBSCRIBE }),
         onMessage: (message: MessageEvent) => {
             const event = JSON.parse(message.data) as FeedEvent
-            dispatch({ type: event.event || event.feed, value: event } as FeedAction)
+            window.requestAnimationFrame(
+                ()=>dispatch({ type: event.event || event.feed, value: event } as FeedAction)
+            )
         },
         onClose: () => console.error,
         onError: () => console.error,
