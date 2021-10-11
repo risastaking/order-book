@@ -6,7 +6,7 @@
         "start": "parcel -p 5000 index.html",
         "build": "parcel build --public-url https://markdreyer.com/order-book/ index.html",
         "test": "jest",
-        "lint": "eslint"
+        "lint": "eslint ."
     },
     "keywords": [],
     "author": "markdreyer",

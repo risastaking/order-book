@@ -24,4 +24,7 @@ module.exports = {
         quotes: ['error', 'single'],
         semi: ['error', 'never'],
     },
+    globals: {
+        'module': 'readonly'
+    }
 }
