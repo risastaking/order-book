@@ -9,7 +9,7 @@ App can be configured by setting variables in the `/config/index.ts` file.
 |-------------------------|-----------------------------------------------------------|--------------------------------------|
 | **feedURL**             | The URL of the web socket which provides order data.      | wss://www.cryptofacilities.com/ws/v1 |
 | **levelsDeep**          | The number of price levels to display in the depth chart. | 12                                   |
-| **viewRefreshInterval** | Number of milliseconds between chart refreshes.           | 700                                  |
+| **viewRefreshInterval** | Number of milliseconds between chart refreshes.           | 600                                  |
 
 
 ## Running the app
