@@ -1,5 +1,5 @@
 import { useState, useCallback, useEffect, useRef } from 'react'
-import { FeedEvent } from '../types/events'
+import { FeedEvent } from '../types/FeedEvents'
 
 type WebSocketOptions = {
     onOpen: () => void;

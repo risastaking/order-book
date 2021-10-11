@@ -26,9 +26,8 @@ export class OrderBook {
     public processFeed = (bids: OrderFeed[], asks: OrderFeed[]): OrderBook => {
         this.maxQuantity = 0
         flow(
-            this.processOrders(bids, OrderSide.BID),
-            this.processOrders(asks, OrderSide.ASK),
-            () => this
+            this.process(bids, OrderSide.BID),
+            this.process(asks, OrderSide.ASK)
         )()
 
         this.bids = this.calculatePercentOfBook(this.bids)
@@ -37,9 +36,9 @@ export class OrderBook {
         return this
     }
 
-    private processOrders = (feed: OrderFeed[], side: OrderSide) => () =>
+    private process = (feed: OrderFeed[], side: OrderSide) => () =>
         flow(
-            this.mapOrders,
+            this.mapFeedToOrder,
             this.upsert(side),
             this.filterEmptyOrders,
             this.sumOrders(side),
@@ -48,9 +47,9 @@ export class OrderBook {
             () => this
         )(feed)
 
-    private mapOrders = (feed: OrderFeed[]): Order[] => feed.map(this.mapOrder)
+    private mapFeedToOrder = (feed: OrderFeed[]): Order[] => feed.map(this.toOrder)
 
-    private mapOrder = (feed: OrderFeed): Order => ({
+    private toOrder = (feed: OrderFeed): Order => ({
         price: feed[0],
         size: feed[1],
         total: 0,

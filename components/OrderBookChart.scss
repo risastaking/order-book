@@ -29,6 +29,11 @@
     }
 }
 @media (min-width: 770px) {
+    /**
+    * Asks are sorted descending on mobile
+    * so we need to reverse the order and flip
+    * the chart for desktop
+    */
     .order-book-chart {
         flex-direction: column-reverse;
     }
