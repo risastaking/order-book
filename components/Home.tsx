@@ -1,4 +1,6 @@
+/* eslint-disable react/display-name */
 import React from 'react'
+import { config } from '../config'
 import { AppState, ProductId } from '../types/App'
 import { FeedAction, FeedActionType } from '../types/Feed'
 import { OrderBookView } from './OrderBookView'
@@ -9,7 +11,21 @@ type HomeProps = {
     dispatch: React.Dispatch<FeedAction>;
   };
 
-export const Home = ({ state, dispatch }: HomeProps) => {
+let memo: number
+let prevMemo: number
+setInterval(() => {
+    memo = prevMemo = Date.now()
+}, config.viewRefreshInterval)
+const shouldRerender = () => memo === prevMemo
+const resetMemo = () => memo = Date.now()
+
+/**
+ *  Home
+ *  A memoized component that limits rerenders to a set interval.
+ *  This is to prevent the charts from rerendering every time we get data from
+ *  the web socket. We don't want to throttle the web socket data, just the component.
+ */
+export const Home = React.memo(({ state, dispatch }: HomeProps) => {
     const handleToggleFeed = () =>
         dispatch({
             type: FeedActionType.TOGGLE,
@@ -28,4 +44,12 @@ export const Home = ({ state, dispatch }: HomeProps) => {
         <p><input type="button" className="button is-primary" value="Toggle Feed" onClick={handleToggleFeed} /></p>
     </div>
 
-}
+}, (_prev, _next) => {
+    // return false when the component should
+    // rerender (i.e. when our interval has run)
+    if (shouldRerender()) {
+        resetMemo()
+        return false // should rerender
+    }
+    return true // should NOT rerender
+})
