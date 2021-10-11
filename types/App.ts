@@ -6,6 +6,7 @@ import { InfoEvent } from './FeedEvents'
 export interface AppConfig {
         feedURL: string
         levelsDeep: number
+        viewRefreshInterval: number
 }
 
 export enum AppActionType {
