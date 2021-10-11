@@ -134,14 +134,12 @@ test('levels deep 2', () => {
     expect(book.bids.length).toBe(2)
     expect(book.asks.length).toBe(2)
 })
-test('highest quantity on ask', () => {
+test('highest quantity on ask 100%', () => {
     const book = new OrderBook(bids, asks)
-    expect(book.maxQuantity).toBe(400)
-    expect(book.asks[0].percentOfBook).toBe('100%')
+    expect(book.asks).toMatchSnapshot()
 })
-test('highest quantity on bid', () => {
+test('highest quantity on bid 100%', () => {
     const book = new OrderBook(bids, asks)
     book.processFeed([[40000, 101]], [])
-    expect(book.maxQuantity).toBe(401)
-    expect(book.bids[2].percentOfBook).toBe('100%')
+    expect(book.bids).toMatchSnapshot()
 })

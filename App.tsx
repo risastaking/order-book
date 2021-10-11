@@ -45,7 +45,7 @@ const App = () => {
     return (
         <Router>
             <Switch>
-                <Route exact={true} path="/">
+                <Route path="/">
                     <Home state={state} dispatch={dispatch} />
                 </Route>
             </Switch>

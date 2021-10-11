@@ -14,7 +14,6 @@ export class OrderBook {
     private topAsk = () => last(this.asks)?.price || 0
     private topBid = () => head(this.bids)?.price || 0
     private hasSpread = () => this.bids.length > 0 && this.asks.length > 0
-    public maxQuantity = 0
 
     readonly spread = (): number => this.hasSpread() ? round(this.topAsk() - this.topBid()) : 0
     readonly midPoint = (): number => this.topAsk() + this.topBid() / 2
@@ -24,7 +23,6 @@ export class OrderBook {
         this.processFeed(bids, asks)
     }
     public processFeed = (bids: OrderFeed[], asks: OrderFeed[]): OrderBook => {
-        this.maxQuantity = 0
         flow(
             this.process(bids, OrderSide.BID),
             this.process(asks, OrderSide.ASK)
@@ -61,7 +59,6 @@ export class OrderBook {
             ? orders.reduce((acc, order, i) => {
                 acc[i].total =
                     i === 0 ? order.size : acc[i - 1].total + order.size
-                this.maxQuantity = Math.max(this.maxQuantity, acc[i].total)
                 return acc
             }, orders)
             : orders.reduceRight((acc, order, i) => {
@@ -69,14 +66,13 @@ export class OrderBook {
                     i === acc.length - 1
                         ? order.size
                         : acc[i + 1].total + order.size
-                this.maxQuantity = Math.max(this.maxQuantity, acc[i].total)
                 return acc
             }, orders)
     }
 
     private calculatePercentOfBook = (orders: Order[]) =>
         orders.reduce((acc, order, i) => {
-            acc[i].percentOfBook = round(order.total / this.maxQuantity * 100) + '%'
+            acc[i].percentOfBook = round(order.total / Math.max(head(this.asks)?.total||0, last(this.bids)?.total||0 ) * 100) + '%'
             return acc
         }, orders)
 
